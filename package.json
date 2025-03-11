@@ -40,6 +40,8 @@
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
     "postcss": "^8.5.3",
-    "vite-plugin-svgr": "^4.3.0"
+    "vite-plugin-svgr": "^4.3.0",
+    "@refinedev/antd": "^5.45.1",
+    "@types/node": "^22.10.5"
   }
 }

@@ -1,23 +1,16 @@
-import { useRoutes } from "react-router-dom";
-import routes from "./router";
-import { App as AntdAppp } from "antd";
-import { useEffect } from "react";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
 
-function App() {
-  useEffect(() => {
-    const token: string | null = sessionStorage.getItem("token") || null;
-    const isWhite = ["/login"].includes(location.pathname);
-    if (!token) {
-      if (isWhite) return;
-      location.replace("/login");
-    } else {
-      if (isWhite) {
-        location.replace("/dashboard/workbench");
-      }
-    }
-  }, []);
-  const RouterPage = useRoutes(routes);
-  return <AntdAppp className="h-[100vh]">{RouterPage}</AntdAppp>;
-}
-
-export default App;
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
