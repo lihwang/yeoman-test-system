@@ -1,9 +1,15 @@
 import request from "@/services/interceptors";
-import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  EllipsisOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from "@ant-design/icons";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable, TableDropdown } from "@ant-design/pro-components";
-import { Button, Dropdown, Space, Tag } from "antd";
+import { Button, Dropdown, message, Modal, Space, Tag } from "antd";
 import { useRef } from "react";
+import AddTeacher from "./AddTeacher";
+import { Link } from "react-router-dom";
 
 type TeacherItem = {
   teacherId: number;
@@ -45,22 +51,46 @@ const columns: ProColumns<TeacherItem>[] = [
       <a
         key="editable"
         onClick={() => {
-          action?.startEditable?.(record.id);
+          action?.startEditable?.(record.teacherId);
         }}
       >
         编辑
       </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
+      <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>查看</Link>,
+      <a
+        onClick={() => {
+          Modal.confirm({
+            title: "提示",
+            icon: <ExclamationCircleFilled />,
+            content: "确认停用该教师吗？",
+            okText: "确认",
+            cancelText: "取消",
+            onOk: async () => {
+              await request.sgks.teacherAbleDelete({
+                teacherId: +record.teacherId,
+                able: 1,
+              });
+              message.success("停用成功");
+              action?.reload();
+            },
+          });
+        }}
+      >
+        停用
       </a>,
-      <TableDropdown
-        key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: "copy", name: "复制" },
-          { key: "delete", name: "删除" },
-        ]}
-      />,
+      // <TableDropdown
+      //   key="actionGroup"
+      //   onSelect={() => action?.reload()}
+      //   menus={[
+      //     {
+      //       key: "delete",
+      //       name: "删除",
+      //       onClick: async () => {
+
+      //       },
+      //     },
+      //   ]}
+      // />,
     ],
   },
 ];
@@ -74,20 +104,17 @@ const TeacherManage = () => {
       cardBordered
       request={async (params, sort, filter) => {
         console.log(sort, filter);
-        const res = (
-          await request.sgks.teacherListCreate({
-            pageNo: params.current,
-            pageSize: params.pageSize,
-            classList: [],
-            majorList: [],
-          })
-        ).data;
-        console.log(res);
+        const res = await request.sgks.teacherListCreate({
+          pageNo: params.current,
+          pageSize: params.pageSize,
+          classList: [],
+          majorList: [],
+        });
 
         return {
-          total: res.length,
-          data: res,
-        };
+          total: res.data.length,
+          data: res.data,
+        } as any;
       }}
       editable={{
         type: "multiple",
@@ -130,16 +157,17 @@ const TeacherManage = () => {
       dateFormatter="string"
       // headerTitle="高级表格"
       toolBarRender={() => [
-        <Button
-          key="button"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            actionRef.current?.reload();
-          }}
-          type="primary"
-        >
-          新建
-        </Button>,
+        <AddTeacher />,
+        // <Button
+        //   key="button"
+        //   icon={<PlusOutlined />}
+        //   onClick={() => {
+        //     // actionRef.current?.reload();
+        //   }}
+        //   type="primary"
+        // >
+        //   新建
+        // </Button>,
       ]}
     />
   );

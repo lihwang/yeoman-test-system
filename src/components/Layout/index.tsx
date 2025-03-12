@@ -77,6 +77,7 @@ const BackendLaytout = () => {
             );
           },
         }}
+        pageTitleRender={false}
         actionsRender={(props) => {
           if (props.isMobile) return [];
           return [

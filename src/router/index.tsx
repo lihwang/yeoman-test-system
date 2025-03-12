@@ -10,6 +10,7 @@ export type Route = RouteObject & {
   icon?: React.ReactNode;
   children?: Route[];
   component?: React.ReactNode;
+  hidden?: boolean;
 };
 
 const routes: Route[] = [
