@@ -11,4 +11,13 @@ export default defineConfig({
 			'@': fileURLToPath(new URL('./src', import.meta.url))
 		}
 	},
+	server: {
+		port: 3500,
+		proxy: {
+			'/sgks': {
+				target: 'https://apifoxmock.com/m1/5825409-5510832-default', //目标请求的地址
+				changeOrigin: true
+			}
+		}
+	}
 })

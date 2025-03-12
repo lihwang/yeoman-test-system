@@ -1,16 +1,17 @@
-import { DashboardOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import { Route } from ".";
+import TeacherManage from "@/pages/system/TeacherManage";
 
 const menuRoutes: Route[] = [
   {
-    path: "dashboard",
-    name: "首页",
-    icon: <DashboardOutlined />,
+    path: "user",
+    name: "用户管理",
+    icon: <UserOutlined />,
     children: [
       {
-        path: "workbench",
-        name: "工作台",
-        // element: <Workbench />,
+        path: "teacher",
+        name: "用户（教师）管理",
+        element: <TeacherManage />,
       },
     ],
   },

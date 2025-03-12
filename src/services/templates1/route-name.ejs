@@ -1,0 +1,38 @@
+<%
+const { routeInfo, utils } = it;
+const {
+  operationId,
+  method,
+  route,
+  moduleName,
+  responsesTypes,
+  description,
+  tags,
+  summary,
+  pathArgs,
+} = routeInfo;
+const { _, fmtToJSDocLine, require } = utils;
+const methodAliases = {
+  get: (pathName, hasPathInserts) => _.camelCase(`${pathName}`),
+  post: (pathName, hasPathInserts) => _.camelCase(`${pathName}`),
+  put: (pathName, hasPathInserts) => _.camelCase(`${pathName}`),
+  patch: (pathName, hasPathInserts) => _.camelCase(`${pathName}`),
+  delete: (pathName, hasPathInserts) => _.camelCase(`${pathName}`),
+};
+const createCustomOperationId = (method, route, moduleName) => {
+  const hasPathInserts = /\{(\w){1,}\}/g.test(route);
+  const splitedRouteBySlash = _.compact(_.replace(route, /\{(\w){1,}\}/g, "").split("/"));
+  const routeParts = (splitedRouteBySlash.length > 1
+    ? splitedRouteBySlash.splice(1)
+    : splitedRouteBySlash
+  ).join("_");
+  const xz =  routeParts.length > 3 && methodAliases[method]
+    ? methodAliases[method](routeParts, hasPathInserts)
+    : _.camelCase(_.lowerCase(method) + "_" + [moduleName].join("_")) || "index";
+    return xz+"_"+_.camelCase(_.lowerCase(method));
+};
+if (route === "/"){
+  return _.camelCase(`${_.lowerCase(method)}Root`);
+}
+return createCustomOperationId(method, route, moduleName);
+%>

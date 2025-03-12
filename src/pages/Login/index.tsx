@@ -1,23 +1,23 @@
 import { Button, Form, Input, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-// import { useRequest } from "ahooks";
-// import request from "@/services/interceptors";
+import { useRequest } from "ahooks";
+import request from "@/services/interceptors";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [form] = Form.useForm();
-  // const { runAsync: authControllerLogin, loading } = useRequest(
-  //   request.api.authControllerLogin,
-  //   { manual: true }
-  // );
+  const { runAsync: mgtLoginCreate, loading } = useRequest(
+    request.sgks.mgtLoginCreate,
+    { manual: true }
+  );
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
-    // const { name, password } = values;
-    // const { data } = await authControllerLogin({
-    // 	name,
-    // 	password
-    // });
-    // sessionStorage.setItem('token', data.token);
+    const { username, password } = values;
+    const { data } = await mgtLoginCreate({
+      username,
+      password,
+    });
+    sessionStorage.setItem("token", data.data.token);
     message.success("登录成功");
     navigate("/dashboard/workbench");
   };
@@ -32,7 +32,7 @@ const Login = () => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="name"
+            name="username"
             rules={[{ required: true, message: "请输入账户名" }]}
           >
             <Input placeholder="请输入账户名" prefix={<UserOutlined />} />
