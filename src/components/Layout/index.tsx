@@ -8,7 +8,7 @@ import type { ProSettings } from "@ant-design/pro-components";
 import { PageContainer, ProCard, ProLayout } from "@ant-design/pro-components";
 import { Dropdown, message } from "antd";
 import { useState } from "react";
-import menuRoutes from "@/router/menu";
+import menuRoutes from "@/router/user";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Route } from "@/router";
 import { logout } from "@/store/indext";
@@ -21,12 +21,14 @@ type MenuItem = {
 };
 
 const loopMenuItem = (menus: Route[]): MenuItem[] =>
-  menus.map(({ icon, path, name, children }) => ({
-    path,
-    name,
-    icon,
-    routes: children ? loopMenuItem(children) : undefined,
-  }));
+  menus
+    .filter((i) => !i.hidden)
+    .map(({ icon, path, name, children }) => ({
+      path,
+      name,
+      icon,
+      routes: children ? loopMenuItem(children) : undefined,
+    }));
 
 const initPath = "/dashboard/workbench";
 const BackendLaytout = () => {

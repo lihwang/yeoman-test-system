@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import Login from "@/pages/Login";
 import { RouteObject } from "react-router-dom";
-import menuRoutes from "./menu";
+import user from "./user";
 
 export type Route = RouteObject & {
   path: string;
@@ -22,7 +22,7 @@ const routes: Route[] = [
   {
     path: "/",
     element: <Layout />,
-    children: [...menuRoutes],
+    children: [...user],
   },
 ];
 

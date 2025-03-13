@@ -10,6 +10,7 @@ import { Button, Dropdown, message, Modal, Space, Tag } from "antd";
 import { useRef } from "react";
 import AddTeacher from "./AddTeacher";
 import { Link } from "react-router-dom";
+import EditPassword from "./EditPassword";
 
 type TeacherItem = {
   teacherId: number;
@@ -78,6 +79,7 @@ const columns: ProColumns<TeacherItem>[] = [
       >
         停用
       </a>,
+      <EditPassword />,
       // <TableDropdown
       //   key="actionGroup"
       //   onSelect={() => action?.reload()}
