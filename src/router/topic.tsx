@@ -1,7 +1,8 @@
-import { ContainerOutlined, UserOutlined } from "@ant-design/icons";
+import { ContainerOutlined } from "@ant-design/icons";
 import { Route } from ".";
-import TeacherManage from "@/pages/system/TeacherManage";
-import TeacherDetail from "@/pages/system/TeacherManage/TeacherDetail";
+import LabelsManage from "@/pages/topic/Labels";
+import OperationTopic from "@/pages/topic/OperationTopic";
+import ObjectiveTopic from "@/pages/topic/ObjectiveTopic";
 
 const menuRoutes: Route[] = [
   {
@@ -12,18 +13,18 @@ const menuRoutes: Route[] = [
       {
         path: "labels",
         name: "标签库",
-        element: <TeacherManage />,
+        element: <LabelsManage />,
       },
       {
-        path: "teacher/:teacherId",
+        path: "objective",
         name: "客观题",
-        element: <TeacherDetail />,
+        element: <ObjectiveTopic />,
         hidden: true,
       },
       {
-        path: "teacher/:teacherId",
+        path: "operation",
         name: "操作题",
-        element: <TeacherDetail />,
+        element: <OperationTopic />,
         hidden: true,
       },
     ],

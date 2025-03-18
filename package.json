@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "/wj_admin",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api": "npx swagger-typescript-api  -p http://127.0.0.1:4523/export/openapi/3?version=2.0 --templates ./src/services/templates -o ./src/services -n swaggerApi.ts  --axios"
+    "api": "npx swagger-typescript-api  -p  http://127.0.0.1:4523/export/openapi/2?version=2.0 --templates ./src/services/templates -o ./src/services -n swaggerApi.ts  --axios"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",

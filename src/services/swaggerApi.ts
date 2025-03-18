@@ -158,7 +158,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/sgks/mgt/login
      */
     mgtLoginCreate: (
-      body: {
+      data: {
         username: string;
         password: string;
       },
@@ -168,20 +168,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         {
           code: string;
           msg: string;
-          data: {
-            id: number;
-            userName: string;
-            realName: string;
-            roleCode: string;
-            token: string;
-          };
         },
         any
       >({
         path: `/sgks/mgt/login`,
         method: "POST",
-        body: body,
-        type: ContentType.Json,
+        body: data,
+        type: ContentType.FormData,
         format: "json",
         ...params,
       }),
@@ -219,10 +212,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     teacherListCreate: (
       body: {
-        userName?: string;
         realName?: string;
         /** 课程集合 */
-        classList: number[];
+        courseList: number[];
         /** 专业集合 */
         majorList: number[];
         pageNo: number;
@@ -232,17 +224,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         {
-          code: string;
           msg: string;
+          code: string;
           data: {
-            teacherId: number;
-            teacherUserName: string;
-            teacherRealName: string;
-            /** 逗号隔开，所教课程 */
-            courses: string;
-            /** 逗号隔开，所教专业 */
-            majors: string;
-          }[];
+            totalCount: number;
+            pageSize: number;
+            pageCount: number;
+            records: {
+              teacherId?: number;
+              realName?: string;
+              userName?: string;
+              courses?: string;
+              majors?: string;
+            }[];
+            pageNo: number;
+          };
         },
         any
       >({

@@ -23,6 +23,7 @@
     /* Linting */
     "strict": false,
     "noUnusedLocals": false,
+    "noImplicitAny":false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true

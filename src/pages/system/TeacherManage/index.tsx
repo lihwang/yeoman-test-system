@@ -1,12 +1,8 @@
 import request from "@/services/interceptors";
-import {
-  EllipsisOutlined,
-  ExclamationCircleFilled,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
-import { ProTable, TableDropdown } from "@ant-design/pro-components";
-import { Button, Dropdown, message, Modal, Space, Tag } from "antd";
+import { ProTable } from "@ant-design/pro-components";
+import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddTeacher from "./AddTeacher";
 import { Link } from "react-router-dom";
@@ -30,11 +26,11 @@ const columns: ProColumns<TeacherItem>[] = [
   },
   {
     title: "教师用户名",
-    dataIndex: "teacherUserName",
+    dataIndex: "userName",
   },
   {
     title: "教师姓名",
-    dataIndex: "teacherRealName",
+    dataIndex: "realName",
   },
   {
     title: "所教课程",
@@ -109,14 +105,15 @@ const TeacherManage = () => {
         const res = await request.sgks.teacherListCreate({
           pageNo: params.current,
           pageSize: params.pageSize,
-          classList: [],
+          courseList: [],
           majorList: [],
         });
+        console.log(res, "res");
 
         return {
-          total: res.data.length,
-          data: res.data,
-        } as any;
+          total: res.data.totalCount,
+          data: res.data.records,
+        };
       }}
       editable={{
         type: "multiple",
