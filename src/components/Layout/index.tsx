@@ -8,9 +8,8 @@ import type { ProSettings } from "@ant-design/pro-components";
 import { PageContainer, ProCard, ProLayout } from "@ant-design/pro-components";
 import { Dropdown, message } from "antd";
 import { useState } from "react";
-import menuRoutes from "@/router/user";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Route } from "@/router";
+import { menuRoutes, Route } from "@/router";
 import { logout } from "@/store/indext";
 
 type MenuItem = {
@@ -47,7 +46,8 @@ const BackendLaytout = () => {
       }}
     >
       <ProLayout
-        route={{ path: "/", routes: loopMenuItem(menuRoutes) }}
+        route={{ path: "/sgks_teacher/", routes: loopMenuItem(menuRoutes) }}
+        title="计算机应用能力综合考测平台"
         siderWidth={216}
         location={{
           pathname,
@@ -88,6 +88,7 @@ const BackendLaytout = () => {
             <GithubFilled key="GithubFilled" />,
           ];
         }}
+        // breadcrumbProps={{}}
         menuFooterRender={(props) => {
           if (props?.collapsed) return undefined;
           return (
@@ -107,7 +108,6 @@ const BackendLaytout = () => {
             <Link
               onClick={() => {
                 console.log(item.path);
-
                 setPathname(item.path || initPath);
               }}
               to={item.path || initPath}

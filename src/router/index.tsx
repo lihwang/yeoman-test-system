@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import Login from "@/pages/Login";
 import { RouteObject } from "react-router-dom";
 import user from "./user";
-
+import topic from "./topic";
 export type Route = RouteObject & {
   path: string;
   name?: string;
@@ -13,6 +13,8 @@ export type Route = RouteObject & {
   hidden?: boolean;
 };
 
+export const menuRoutes = [...user, ...topic];
+
 const routes: Route[] = [
   {
     path: "/login",
@@ -22,7 +24,7 @@ const routes: Route[] = [
   {
     path: "/",
     element: <Layout />,
-    children: [...user],
+    children: [...menuRoutes],
   },
 ];
 

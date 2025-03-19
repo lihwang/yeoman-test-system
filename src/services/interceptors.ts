@@ -3,7 +3,7 @@ import { Api } from './swaggerApi';
 import { message } from 'antd';
 //接口地址
 export const baseURL = import.meta.env.VITE_APP_BASE_URL;
-
+ const env = import.meta.env.VITE_APP_ENV;
 const request = new Api({ baseURL });
 
 //添加请求连拦截器
@@ -13,9 +13,6 @@ request.instance.interceptors.request.use(
 		const token: string | null = sessionStorage.getItem('token') || null;
 		if (token) {
 			config.headers['Authorization'] = `Bearer ${token}`;
-		}
-		if (config.method === 'post') {
-			config.headers['Content-Type'] = 'application/json';
 		}
 		return config;
 	},
@@ -29,11 +26,10 @@ request.instance.interceptors.request.use(
 //添加响应拦截器
 request.instance.interceptors.response.use(
 	(response: AxiosResponse) => {
-		// debugger
-		// if (response.data.code !== 0) {
-		// 	message.error(response.data.message);
-		// 	return Promise.reject(response.data);
-		// }
+		if (response.data.code !== "200"&&env==='prod') {
+			message.error(response.data.msg);
+			return Promise.reject(response.data);
+		}
 		return response.data;
 	},
 	(error: AxiosError<Record<string, string>>) => {

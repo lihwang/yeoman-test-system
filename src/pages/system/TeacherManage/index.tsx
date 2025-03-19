@@ -76,19 +76,6 @@ const columns: ProColumns<TeacherItem>[] = [
         停用
       </a>,
       <EditPassword />,
-      // <TableDropdown
-      //   key="actionGroup"
-      //   onSelect={() => action?.reload()}
-      //   menus={[
-      //     {
-      //       key: "delete",
-      //       name: "删除",
-      //       onClick: async () => {
-
-      //       },
-      //     },
-      //   ]}
-      // />,
     ],
   },
 ];
@@ -119,7 +106,7 @@ const TeacherManage = () => {
         type: "multiple",
       }}
       columnsState={{
-        persistenceKey: "pro-table-singe-demos",
+        persistenceKey: "teachermanage_list",
         persistenceType: "localStorage",
         defaultValue: {
           option: { fixed: "right", disable: true },

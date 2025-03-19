@@ -3,10 +3,10 @@ import { Route } from ".";
 import TeacherManage from "@/pages/system/TeacherManage";
 import TeacherDetail from "@/pages/system/TeacherManage/TeacherDetail";
 
-const menuRoutes: Route[] = [
+const user: Route[] = [
   {
     path: "user",
-    name: "用户管理",
+    name: "教师管理",
     icon: <UserOutlined />,
     children: [
       {
@@ -24,4 +24,4 @@ const menuRoutes: Route[] = [
   },
 ];
 
-export default menuRoutes;
+export default user;

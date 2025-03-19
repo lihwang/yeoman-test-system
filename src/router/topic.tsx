@@ -19,13 +19,11 @@ const menuRoutes: Route[] = [
         path: "objective",
         name: "客观题",
         element: <ObjectiveTopic />,
-        hidden: true,
       },
       {
         path: "operation",
         name: "操作题",
         element: <OperationTopic />,
-        hidden: true,
       },
     ],
   },

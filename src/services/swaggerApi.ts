@@ -261,15 +261,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     teacherAddOrEditCreate: (
       body: {
         teacherId?: number;
-        teacherUserName: string;
-        teacherRealName: string;
+        userName: string;
+        tealName: string;
         teacherPass: string;
         /** 所教课程集合 */
-        courses: number[];
+        courseIds: number[];
         /** 所教专业集合 */
-        majors: number[];
+        majorIds: number[];
         /** 所教班级集合 */
-        classes: number[];
+        classIds: number[];
       },
       params: RequestParams = {},
     ) =>

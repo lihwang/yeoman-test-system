@@ -17,14 +17,15 @@ const Login = () => {
       username,
       password,
     });
-    sessionStorage.setItem("token", data.data.token);
+    sessionStorage.setItem("token", data.token);
     message.success("登录成功");
-    navigate("/dashboard/workbench");
+    navigate("/");
   };
 
   return (
     <div className="h-[100vh] w-[100vw] flex justify-center items-center">
       <div className="flex flex-col justify-center items-center">
+        <div className=""></div>
         <Form
           size="large"
           className="w-[300px]"
