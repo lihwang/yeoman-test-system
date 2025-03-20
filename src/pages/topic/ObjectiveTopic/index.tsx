@@ -1,10 +1,12 @@
 import request from "@/services/interceptors";
-import { ExclamationCircleFilled } from "@ant-design/icons";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
-import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddObjectiveTopic from "./AddObjectiveTopic";
+import { enumToObject, QuestionTypeEnum } from "@/utils/enums";
+import { message, Modal } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { useGetCourseList } from "@/utils";
 
 type LabelItem = {
   questionId: number;
@@ -16,6 +18,7 @@ type LabelItem = {
   courseId: string;
   /** 课程名称 */
   courseName: string;
+  questionStem: string;
   labels: {
     labelId: number;
     labelName: string;
@@ -29,23 +32,55 @@ const columns: ProColumns<LabelItem>[] = [
     title: "题目ID",
     dataIndex: "questionId",
     hideInSearch: true,
-  },
-  {
-    title: "题目编号",
-    dataIndex: "courseId",
+    hideInTable: true,
   },
   {
     title: "题目编号",
     dataIndex: "questionCode",
+    hideInSearch: true,
+  },
+  {
+    title: "题干",
+    dataIndex: "questionStem",
+  },
+
+  {
+    title: "题目类型",
+    dataIndex: "questionType",
+    valueEnum: enumToObject(QuestionTypeEnum),
+  },
+  {
+    title: "课程",
+    dataIndex: "courseId",
+    hideInTable: true,
+    // request: async () => {},
+  },
+  {
+    title: "课程名称",
+    dataIndex: "courseName",
+    hideInSearch: true,
+  },
+  {
+    title: "创建时间",
+    dataIndex: "createTime",
+    hideInSearch: true,
+  },
+  {
+    title: "更新时间",
+    dataIndex: "updateTime",
+    hideInSearch: true,
   },
   {
     title: "标签",
     dataIndex: "labels",
     valueType: "select",
+    hideInTable: true,
     valueEnum: {
-      1: { text: "标签1", status: "success" },
-      2: { text: "标签2", status: "error" },
-      3: { text: "标签3", status: "default" },
+      1: "标签1",
+      2: "标签",
+    },
+    render: (_, record) => {
+      return record.labels.map((item) => item.labelName).join(",");
     },
   },
   {
@@ -56,17 +91,38 @@ const columns: ProColumns<LabelItem>[] = [
       <a
         key="editable"
         onClick={() => {
-          action?.startEditable?.(record.labelId);
+          action?.startEditable?.(record.questionId);
         }}
       >
         编辑
+      </a>,
+      <a
+        onClick={() => {
+          Modal.confirm({
+            title: "提示",
+            icon: <ExclamationCircleFilled />,
+            content: "确认删除吗？",
+            okText: "确认",
+            cancelText: "取消",
+            onOk: async () => {
+              await request.sgks.quesionDeleteDelete({
+                questionId: +record.questionId,
+              });
+              message.success("删除成功");
+              action?.reload();
+            },
+          });
+        }}
+      >
+        删除
       </a>,
     ],
   },
 ];
 
-const LabelsManage = () => {
+const ObjectiveTopic = () => {
   const actionRef = useRef<ActionType>(null);
+
   return (
     <ProTable<LabelItem>
       columns={columns}
@@ -81,6 +137,7 @@ const LabelsManage = () => {
         } as any);
         return {
           data: res.data,
+          total: res.data,
         };
       }}
       columnsState={{
@@ -106,4 +163,4 @@ const LabelsManage = () => {
   );
 };
 
-export default LabelsManage;
+export default ObjectiveTopic;

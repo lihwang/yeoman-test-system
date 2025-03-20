@@ -9,6 +9,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface ExerciseStepsType {
+  exerciseStepId: number;
+  stepDesc: string;
+  stepOrder: string;
+}
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
 
@@ -152,7 +158,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name MgtLoginCreate
      * @summary 教师端登录
      * @request POST:/sgks/mgt/login
@@ -167,7 +172,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<
         {
           code: string;
-          msg: string;
+          data: {
+            roleCodes: string[];
+            token: string;
+            username: string;
+          };
         },
         any
       >({
@@ -182,7 +191,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name MgtLogOutList
      * @summary 教师端登出
      * @request GET:/sgks/mgt/logOut
@@ -205,7 +213,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherListCreate
      * @summary 查看教师列表
      * @request POST:/sgks/teacher/list
@@ -253,7 +260,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherAddOrEditCreate
      * @summary 新增&编辑教师
      * @request POST:/sgks/teacher/addOrEdit
@@ -293,7 +299,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherGetList
      * @summary 查看教师详情
      * @request GET:/sgks/teacher/get
@@ -330,7 +335,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherAbleDelete
      * @summary 教师启用or禁用
      * @request DELETE:/sgks/teacher/able
@@ -363,7 +367,56 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
+     * @name CourseAllList
+     * @summary 获取所有课程的列表
+     * @request GET:/sgks/course/all
+     */
+    courseAllList: (params: RequestParams = {}) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: {
+            courseId: number;
+            courseName: string;
+          }[];
+        },
+        any
+      >({
+        path: `/sgks/course/all`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name MajorAllList
+     * @summary 获取所有专业的列表
+     * @request GET:/sgks/major/all
+     */
+    majorAllList: (params: RequestParams = {}) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: {
+            majorId: number;
+            majorName: string;
+          }[];
+        },
+        any
+      >({
+        path: `/sgks/major/all`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name LabelListList
      * @summary 查看知识点标签列表
      * @request GET:/sgks/label/list
@@ -398,7 +451,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name LableAddOrEditCreate
      * @summary 新增or编辑知识点标签
      * @request POST:/sgks/lable/addOrEdit
@@ -430,7 +482,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name LableAbleCreate
      * @summary 启用or停用知识点标签
      * @request POST:/sgks/lable/able
@@ -462,7 +513,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionListList
      * @summary 查看客观题列表
      * @request GET:/sgks/question/list
@@ -517,7 +567,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionAddOrEditCreate
      * @summary 添加or编辑客观题
      * @request POST:/sgks/question/addOrEdit
@@ -576,7 +625,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionGetList
      * @summary 查看客观题详情
      * @request GET:/sgks/question/get
@@ -605,7 +653,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseListCreate
      * @summary 查看操作题列表
      * @request POST:/sgks/exercise/list
@@ -627,21 +674,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           code: string;
           msg: string;
           data: {
-            exerciseId: string;
-            /** 操作题类型 */
+            exerciseId: number;
             exerciseType: string;
-            /** 操作题编码 */
             exerciseCode: string;
-            /** 题干 */
             exerciseStem: string;
-            /** 知识点标签集合 */
-            labels: {
-              labelId: number;
+            labels?: {
+              labelId: string;
               labelName: string;
             }[];
             createTime: string;
             updateTime: string;
-          };
+            courseName: string;
+            courseId: number;
+          }[];
         },
         any
       >({
@@ -656,7 +701,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseAddOrEditCreate
      * @summary 新增or编辑操作题
      * @request POST:/sgks/exercise/addOrEdit
@@ -686,6 +730,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         answerShell: string;
         /** 知识点标签 */
         labelIds: number[];
+        exerciseSteps: ExerciseStepsType[];
       },
       params: RequestParams = {},
     ) =>
@@ -709,7 +754,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseGetList
      * @summary 查看操作题详情
      * @request GET:/sgks/exercise/get
@@ -772,7 +816,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuesionDeleteDelete
      * @summary 删除客观题
      * @request DELETE:/sgks/quesion/delete
@@ -801,7 +844,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseDeleteList
      * @summary 删除操作题
      * @request GET:/sgks/exercise/delete
@@ -830,7 +872,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassListCreate
      * @summary 查看编辑列表
      * @request POST:/sgks/class/list
@@ -877,7 +918,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassAddOrEditCreate
      * @summary 新增or编辑 班级
      * @request POST:/sgks/class/addOrEdit
@@ -916,7 +956,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassGetList
      * @summary 查看班级详情
      * @request GET:/sgks/class/get
@@ -959,7 +998,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassDeleteDelete
      * @summary 删除班级
      * @request DELETE:/sgks/class/delete
@@ -988,7 +1026,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentListCreate
      * @summary 查看学员列表
      * @request POST:/sgks/student/list
@@ -1034,7 +1071,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentAddOrEditCreate
      * @summary 新建or编辑学员
      * @request POST:/sgks/student/addOrEdit
@@ -1070,7 +1106,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentGetList
      * @summary 查看学员详情
      * @request GET:/sgks/student/get
@@ -1109,7 +1144,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentGetExamResultsList
      * @summary 查看需要的考试记录
      * @request GET:/sgks/student/getExamResults
@@ -1159,7 +1193,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentDeleteDelete
      * @summary 删除学员
      * @request DELETE:/sgks/student/delete
@@ -1188,7 +1221,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name GradeListList
      * @summary 查看年级列表
      * @request GET:/sgks/grade/list
@@ -1204,7 +1236,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name MajorListList
      * @summary 查看专业列表
      * @request GET:/sgks/major/list
@@ -1220,7 +1251,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassTreeList
      * @summary 班级树
      * @request GET:/sgks/class/tree
@@ -1236,7 +1266,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperListCreate
      * @summary 查看试卷列表
      * @request POST:/sgks/paper/list
@@ -1285,7 +1314,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperAddOrEditCreate
      * @summary 新增or编辑试卷
      * @request POST:/sgks/paper/addOrEdit
@@ -1320,7 +1348,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperGetList
      * @summary 查看试卷详情
      * @request GET:/sgks/paper/get
@@ -1390,7 +1417,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperDeleteDelete
      * @summary 删除试卷
      * @request DELETE:/sgks/paper/delete
@@ -1419,7 +1445,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendQuestionListCreate
      * @summary 学员客观题推荐列表
      * @request POST:/sgks/recommend/question/list
@@ -1466,7 +1491,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendQuesionDeleteDelete
      * @summary 删除客观题推荐题
      * @request DELETE:/sgks/recommend/quesion/delete
@@ -1497,7 +1521,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendExerciseListCreate
      * @summary 学员操作题推荐列表
      * @request POST:/sgks/recommend/exercise/list
@@ -1542,7 +1565,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendExerciseDeleteDelete
      * @summary 删除操作题推荐题
      * @request DELETE:/sgks/recommend/exercise/delete
@@ -1573,7 +1595,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 学员端
      * @name FrontLoginCreate
      * @summary 学员登录
      * @request POST:/sgks/front/login
@@ -1611,7 +1632,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 学员端
      * @name FrontMyInfoList
      * @summary 查看学员自己的基本信息
      * @request GET:/sgks/front/myInfo
@@ -1642,7 +1662,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 学员端
      * @name FrontExamInfoList
      * @summary 查看考试信息
      * @request GET:/sgks/front/examInfo

@@ -1,4 +1,10 @@
-import { QuestionTypeEnum, QuestionTypeList } from "@/utils/enums";
+import request from "@/services/interceptors";
+import { useGetCourseList } from "@/utils";
+import {
+  enumToSelectOptions,
+  QuestionTypeEnum,
+  QuestionTypeList,
+} from "@/utils/enums";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   EditableProTable,
@@ -36,16 +42,47 @@ const columns: ProColumns<DataSourceType>[] = [
   },
 ];
 
+interface FormProps {
+  questionId?: number;
+  /** 题目标号 */
+  questionCode: string;
+  /**
+   * 客观题类型
+   * 题目类型，1：填空题，2：选择题，3：判断题，4：问答题
+   */
+  questionType: number;
+  /** 题干 */
+  questionStem: string;
+  /** 所属课程id */
+  courseId: number;
+  /**
+   * 填空题和问答题答案
+   * 逗号隔开
+   */
+  answerContent: string;
+  /** 判断题答案 */
+  answerTf: number;
+  /** 选择题答案 */
+  answerChoice: string;
+  labelIds: {
+    labelId: number;
+  }[];
+  options: {
+    /** abcd */
+    opionSgin: string;
+    /** 选项内容 */
+    opionContent: string;
+  }[];
+}
+
 const AddObjectiveTopic = () => {
-  const [form] = Form.useForm<{ name: string; company: string }>();
+  const [courseList] = useGetCourseList();
+  const [form] = Form.useForm<FormProps>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() =>
     defaultData.map((i, idx) => idx)
   );
   return (
-    <ModalForm<{
-      name: string;
-      company: string;
-    }>
+    <ModalForm<FormProps>
       title="新建客观题"
       trigger={
         <Button type="primary">
@@ -64,6 +101,7 @@ const AddObjectiveTopic = () => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
+        await request.sgks.questionAddOrEditCreate(values);
         console.log(values.name);
         message.success("提交成功");
         return true;
@@ -74,29 +112,24 @@ const AddObjectiveTopic = () => {
         required
         name="questionType"
         label="客观题类型"
-        options={QuestionTypeList}
+        options={enumToSelectOptions(QuestionTypeEnum)}
       />
       <ProFormTextArea required name="questionStem" label="题干" />
       <ProFormSelect
         required
         name="courseId"
         label="所属课程"
-        options={[
-          {
-            label: "计算机科学与技术",
-            value: 1,
-          },
-        ]}
+        options={courseList}
       />
       <ProFormSelect
         required
-        name="courseId"
+        name="labels"
         mode="multiple"
         label="标签"
         options={[
           {
             label: "PPT专属",
-            value: { labelId: 1 },
+            value: 1,
           },
         ]}
       />
@@ -135,7 +168,7 @@ const AddObjectiveTopic = () => {
           } else if (questionType === QuestionTypeEnum.选择题) {
             return (
               <>
-                <ProForm.Item label="选项" name="options">
+                <ProForm.Item required label="选项" name="options">
                   <EditableProTable<DataSourceType>
                     rowKey="id"
                     toolBarRender={false}
