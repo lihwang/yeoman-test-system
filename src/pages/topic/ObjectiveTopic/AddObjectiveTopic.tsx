@@ -91,15 +91,15 @@ const AddObjectiveTopic = () => {
       <ProFormSelect
         required
         name="courseId"
-        label="所属课程"
+        mode="multiple"
+        label="标签"
         options={[
           {
-            label: "计算机科学与技术",
-            value: 1,
+            label: "PPT专属",
+            value: { labelId: 1 },
           },
         ]}
       />
-
       <ProFormDependency name={["questionType"]}>
         {({ questionType }) => {
           if (questionType === QuestionTypeEnum.判断题) {
@@ -124,12 +124,14 @@ const AddObjectiveTopic = () => {
             questionType === QuestionTypeEnum.填空题 ||
             questionType === QuestionTypeEnum.问答题
           ) {
-            <ProFormTextArea
-              placeholder={"多个答案使用逗号隔开"}
-              required
-              name="answerContent"
-              label="答案"
-            />;
+            return (
+              <ProFormTextArea
+                placeholder={"多个答案使用逗号隔开"}
+                required
+                name="answerContent"
+                label="答案"
+              />
+            );
           } else if (questionType === QuestionTypeEnum.选择题) {
             return (
               <>

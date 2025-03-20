@@ -7,24 +7,46 @@ import { useRef } from "react";
 import AddObjectiveTopic from "./AddObjectiveTopic";
 
 type LabelItem = {
-  teacherId: number;
-  teacherUserName: string;
-  teacherRealName: string;
-  /** 逗号隔开，所教课程 */
-  courses: string;
-  /** 逗号隔开，所教专业 */
-  majors: string;
+  questionId: number;
+  /** 题目编号 */
+  questionCode: string;
+  /** 题目类型 */
+  questionType: string;
+  /** 课程id */
+  courseId: string;
+  /** 课程名称 */
+  courseName: string;
+  labels: {
+    labelId: number;
+    labelName: string;
+  }[];
+  createTime: string;
+  updateTime: string;
 };
 
 const columns: ProColumns<LabelItem>[] = [
   {
-    title: "标签ID",
-    dataIndex: "labelId",
+    title: "题目ID",
+    dataIndex: "questionId",
     hideInSearch: true,
   },
   {
-    title: "标签名称",
-    dataIndex: "labelName",
+    title: "题目编号",
+    dataIndex: "courseId",
+  },
+  {
+    title: "题目编号",
+    dataIndex: "questionCode",
+  },
+  {
+    title: "标签",
+    dataIndex: "labels",
+    valueType: "select",
+    valueEnum: {
+      1: { text: "标签1", status: "success" },
+      2: { text: "标签2", status: "error" },
+      3: { text: "标签3", status: "default" },
+    },
   },
   {
     title: "操作",

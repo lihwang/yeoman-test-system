@@ -13,16 +13,22 @@ export const courseList = [
   },
 ].map((i) => (i.value = i.label));
 
+const enumToSelectOptions = <T extends Record<string, string | number>>(
+  enumObj: T
+): { label: string; value: T[keyof T] }[] => {
+  return Object.keys(enumObj)
+    .filter((key) => isNaN(Number(key))) // 过滤掉数字键（针对数字枚举反向映射）
+    .map((key) => ({
+      label: key,
+      value: enumObj[key] as T[keyof T]
+    }));
+};
+
 export enum QuestionTypeEnum {
   填空题 = 1,
   选择题 = 2,
   判断题 = 3,
-  问答题=4 
+  问答题 = 4 
 }
 
-export const QuestionTypeList = Object.keys(QuestionTypeEnum).map(i=>{
-  return {
-    label:i,
-    value:QuestionTypeEnum[i]
-  }
-})
+export const QuestionTypeList = enumToSelectOptions(QuestionTypeEnum)
