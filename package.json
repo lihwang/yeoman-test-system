@@ -6,7 +6,7 @@
   "homepage": "/wj_admin",
   "scripts": {
     "dev": "vite --mode dev",
-    "build": "tsc -b && vite build",
+    "build": "vite build --mode prod",
     "lint": "eslint .",
     "preview": "vite preview",
     "api": "npx swagger-typescript-api  -p  http://127.0.0.1:4523/export/openapi/2?version=2.0 --templates ./src/services/templates -o ./src/services -n swaggerApi.ts  --axios"

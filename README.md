@@ -52,3 +52,5 @@ export default tseslint.config({
   },
 })
 ```
+
+    // "build": "tsc -b && vite build",
