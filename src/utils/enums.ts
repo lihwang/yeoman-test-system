@@ -13,3 +13,16 @@ export const courseList = [
   },
 ].map((i) => (i.value = i.label));
 
+export enum QuestionTypeEnum {
+  填空题 = 1,
+  选择题 = 2,
+  判断题 = 3,
+  问答题=4 
+}
+
+export const QuestionTypeList = Object.keys(QuestionTypeEnum).map(i=>{
+  return {
+    label:i,
+    value:QuestionTypeEnum[i]
+  }
+})
