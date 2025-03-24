@@ -78,6 +78,7 @@ const AddObjectiveTopic = () => {
         required
         name="attachment"
         label="答案文件"
+        description={"上传答案文件"}
       />
       <ProFormText required name="answerShell" label="答案脚本" />
       <ProFormSelect

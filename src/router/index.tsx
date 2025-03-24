@@ -4,6 +4,7 @@ import { RouteObject } from "react-router-dom";
 import user from "./user";
 import topic from "./topic";
 import paper from "./paper";
+import student from "./student";
 export type Route = RouteObject & {
   path: string;
   name?: string;
@@ -14,7 +15,7 @@ export type Route = RouteObject & {
   hidden?: boolean;
 };
 
-export const menuRoutes = [...user, ...topic, ...paper];
+export const menuRoutes = [...user, ...topic, ...student, ...paper];
 
 const routes: Route[] = [
   {

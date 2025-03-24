@@ -11,7 +11,7 @@ const user: Route[] = [
     children: [
       {
         path: "teacher",
-        name: "用户（教师）管理",
+        name: "用户管理",
         element: <TeacherManage />,
       },
       {
