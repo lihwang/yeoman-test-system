@@ -3,6 +3,7 @@ import Login from "@/pages/Login";
 import { RouteObject } from "react-router-dom";
 import user from "./user";
 import topic from "./topic";
+import paper from "./paper";
 export type Route = RouteObject & {
   path: string;
   name?: string;
@@ -13,7 +14,7 @@ export type Route = RouteObject & {
   hidden?: boolean;
 };
 
-export const menuRoutes = [...user, ...topic];
+export const menuRoutes = [...user, ...topic, ...paper];
 
 const routes: Route[] = [
   {
