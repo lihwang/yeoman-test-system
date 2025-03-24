@@ -6,28 +6,9 @@ import AddObjectiveTopic from "./AddObjectiveTopic";
 import { enumToObject, QuestionTypeEnum } from "@/utils/enums";
 import { message, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useGetCourseList } from "@/utils";
+import { ObjectiveItem } from "@/utils/types";
 
-type LabelItem = {
-  questionId: number;
-  /** 题目编号 */
-  questionCode: string;
-  /** 题目类型 */
-  questionType: string;
-  /** 课程id */
-  courseId: string;
-  /** 课程名称 */
-  courseName: string;
-  questionStem: string;
-  labels: {
-    labelId: number;
-    labelName: string;
-  }[];
-  createTime: string;
-  updateTime: string;
-};
-
-const columns: ProColumns<LabelItem>[] = [
+const columns: ProColumns<ObjectiveItem>[] = [
   {
     title: "题目ID",
     dataIndex: "questionId",
@@ -124,7 +105,7 @@ const ObjectiveTopic = () => {
   const actionRef = useRef<ActionType>(null);
 
   return (
-    <ProTable<LabelItem>
+    <ProTable<ObjectiveItem>
       columns={columns}
       actionRef={actionRef}
       cardBordered

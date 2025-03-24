@@ -48,3 +48,8 @@ export enum ExerciseTypeEnum {
   电子表格 = 3,
   演示文稿 = 4,
 }
+
+export enum TopicType {
+  Objective = "1",
+  Operation = "2",
+}

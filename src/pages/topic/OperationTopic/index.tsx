@@ -3,32 +3,12 @@ import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
 import { useRef } from "react";
 import AddOperationTopic from "./AddOperationTopic";
-import {
-  enumToObject,
-  ExerciseTypeEnum,
-  QuestionTypeEnum,
-} from "@/utils/enums";
+import { enumToObject, ExerciseTypeEnum } from "@/utils/enums";
 import { message, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { OperationItem } from "@/utils/types";
 
-type LabelItem = {
-  exerciseId: string;
-  /** 操作题类型 */
-  exerciseType: string;
-  /** 操作题编码 */
-  exerciseCode: string;
-  /** 题干 */
-  exerciseStem: string;
-  /** 知识点标签集合 */
-  labels: {
-    labelId: number;
-    labelName: string;
-  }[];
-  createTime: string;
-  updateTime: string;
-};
-
-const columns: ProColumns<LabelItem>[] = [
+const columns: ProColumns<OperationItem>[] = [
   {
     title: "题目ID",
     dataIndex: "exerciseId",
@@ -122,7 +102,7 @@ const columns: ProColumns<LabelItem>[] = [
 const OperationTopic = () => {
   const actionRef = useRef<ActionType>(null);
   return (
-    <ProTable<LabelItem>
+    <ProTable<OperationItem>
       columns={columns}
       actionRef={actionRef}
       cardBordered
