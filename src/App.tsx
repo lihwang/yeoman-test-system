@@ -12,7 +12,7 @@ function App() {
       location.replace("/sgks_teacher/login");
     } else {
       if (isWhite) {
-        location.replace("/sgks_teacher");
+        location.replace("/sgks_teacher/");
       }
     }
   }, []);
