@@ -21,7 +21,7 @@ const Login = () => {
       password,
     });
     setUser(data);
-    sessionStorage.setItem("token", data.token);
+    localStorage.setItem("token", data.token);
     message.success("登录成功");
     navigate("/");
   };

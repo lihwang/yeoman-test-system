@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { Api } from "./swaggerApi";
 import { message } from "antd";
+import { logout } from "@/store/indext";
 //接口地址
 const env = import.meta.env.VITE_APP_ENV;
 export const baseURL = "/";
@@ -10,7 +11,7 @@ const request = new Api({ baseURL });
 request.instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     //在发送请求之前做些什么
-    const token: string | null = sessionStorage.getItem("token") || null;
+    const token: string | null = localStorage.getItem("token") || null;
     if (token) {
       config.headers["Authorization"] = `${token}`;
     }
@@ -52,6 +53,7 @@ request.instance.interceptors.response.use(
       case 401:
         msg = "token 失效，请重新登录";
         // 这里可以触发退出的 action
+        logout();
         break;
       case 403:
         msg = "拒绝访问";

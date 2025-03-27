@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 function App() {
   useEffect(() => {
-    const token: string | null = sessionStorage.getItem("token") || null;
+    const token: string | null = localStorage.getItem("token") || null;
     const isWhite = ["/sgks_teacher/login"].includes(location.pathname);
     if (!token) {
       if (isWhite) return;
