@@ -1,7 +1,6 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Route } from ".";
 import TeacherManage from "@/pages/system/TeacherManage";
-import TeacherDetail from "@/pages/system/TeacherManage/TeacherDetail";
 
 const user: Route[] = [
   {
@@ -13,12 +12,6 @@ const user: Route[] = [
         path: "teacher",
         name: "用户管理",
         element: <TeacherManage />,
-      },
-      {
-        path: "teacher/:teacherId",
-        name: "用户详情",
-        element: <TeacherDetail />,
-        hidden: true,
       },
     ],
   },

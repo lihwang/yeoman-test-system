@@ -5,18 +5,9 @@ import { ProTable } from "@ant-design/pro-components";
 import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddLabel from "./AddLabel";
+import { LabelType } from "@/types";
 
-type LabelItem = {
-  teacherId: number;
-  teacherUserName: string;
-  teacherRealName: string;
-  /** 逗号隔开，所教课程 */
-  courses: string;
-  /** 逗号隔开，所教专业 */
-  majors: string;
-};
-
-const columns: ProColumns<LabelItem>[] = [
+const columns: ProColumns<LabelType>[] = [
   {
     title: "标签ID",
     dataIndex: "labelId",
@@ -67,12 +58,11 @@ const columns: ProColumns<LabelItem>[] = [
 const LabelsManage = () => {
   const actionRef = useRef<ActionType>(null);
   return (
-    <ProTable<LabelItem>
+    <ProTable<LabelType>
       columns={columns}
       actionRef={actionRef}
       cardBordered
-      request={async (params, sort, filter) => {
-        console.log(sort, filter);
+      request={async (params) => {
         const res = await request.sgks.labelListList({
           labelName: params.labelName,
         });
@@ -86,21 +76,11 @@ const LabelsManage = () => {
         defaultValue: {
           option: { fixed: "right", disable: true },
         },
-        onChange(value) {
-          console.log("value: ", value);
-        },
       }}
-      rowKey="id"
       search={{
         labelWidth: "auto",
       }}
-      options={{
-        setting: {
-          listsHeight: 400,
-        },
-      }}
       pagination={false}
-      dateFormatter="string"
       toolBarRender={() => [<AddLabel />]}
     />
   );

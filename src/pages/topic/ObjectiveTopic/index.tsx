@@ -6,9 +6,9 @@ import AddObjectiveTopic from "./AddObjectiveTopic";
 import { enumToObject, QuestionTypeEnum } from "@/utils/enums";
 import { message, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { ObjectiveItem } from "@/utils/types";
+import { ObjectiveType } from "@/types";
 
-const columns: ProColumns<ObjectiveItem>[] = [
+const columns: ProColumns<ObjectiveType>[] = [
   {
     title: "题目ID",
     dataIndex: "questionId",
@@ -105,20 +105,20 @@ const ObjectiveTopic = () => {
   const actionRef = useRef<ActionType>(null);
 
   return (
-    <ProTable<ObjectiveItem>
+    <ProTable<ObjectiveType>
       columns={columns}
       actionRef={actionRef}
       cardBordered
       request={async (params, sort, filter) => {
         console.log(params, sort, filter);
-        const res = await request.sgks.questionListList({
+        const res = await request.sgks.questionListCreate({
           ...params,
           pageNo: params.current,
           pageSize: params.pageSize,
-        } as any);
+        });
         return {
-          data: res.data,
-          total: res.data,
+          total: res.data.totalCount,
+          data: res.data.records,
         };
       }}
       columnsState={{

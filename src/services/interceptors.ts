@@ -36,7 +36,7 @@ request.instance.interceptors.response.use(
   (error: AxiosError<Record<string, string>>) => {
     //超出 2xx 范围的状态码都会触发该函数
     //对响应错误做点什么
-    console.log(error, "response-error");
+    // console.log(error, "response-error");
 
     const { response } = error;
     // 处理 HTTP 网络错误
@@ -53,7 +53,7 @@ request.instance.interceptors.response.use(
       case 401:
         msg = "token 失效，请重新登录";
         // 这里可以触发退出的 action
-        logout();
+        // logout();
         break;
       case 403:
         msg = "拒绝访问";

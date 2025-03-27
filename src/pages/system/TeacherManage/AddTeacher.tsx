@@ -1,43 +1,48 @@
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
 import { TeacherType } from "@/types";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import {
   ModalForm,
   ProFormSelect,
   ProFormText,
 } from "@ant-design/pro-components";
-import { useRequest } from "ahooks";
+import { useAsyncEffect, useRequest } from "ahooks";
 import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-const AddTeacher = () => {
+// 新增一个参数用于接收编辑的数据
+const AddTeacher = ({ editData }: { editData?: TeacherType }) => {
   const [form] = Form.useForm<TeacherType>();
   const { majorList, courseList } = useAtomValue(enumValuesAtom);
-  // const { data: classRes } = useRequest(request.sgks.classListCreate, {
-  //   defaultParams: {
-  //     pageNo: 1,
-  //     pageSize: 1000,
-  //   },
-  // });
+  const { runAsync: classListCreateGet } = useRequest(
+    request.sgks.classListCreate,
+    {
+      manual: true,
+    }
+  );
 
-  // const classList = useMemo(() => {
-  //   return classRes?.data?.records?.map((item) => {
-  //     return {
-  //       value: item.classId,
-  //       label: item.className,
-  //     };
-  //   });
-  // }, [classRes]);
+  // 根据是否有编辑数据设置弹窗标题和触发按钮图标
+  const title = editData ? "编辑用户" : "新建用户";
+  const triggerIcon = editData ? <EditOutlined /> : <PlusOutlined />;
+  const triggerText = editData ? "编辑" : "新建";
+  const [gradeList, setGradeList] = useState([]);
+
+  useAsyncEffect(async () => {
+    // const res = await classListCreateGet({ pageNo: 1, pageSize: 1000,classGrade: });
+    // const res = await request.sgks.gradeListList({});
+    // setGradeList(res.data.);
+    form.setFieldsValue({ ...editData });
+  }, []);
 
   return (
     <ModalForm<TeacherType>
-      title="新建用户"
+      title={title}
       trigger={
         <Button type="primary">
-          <PlusOutlined />
-          新建
+          {triggerIcon}
+          {triggerText}
         </Button>
       }
       labelCol={{ span: 4 }}
@@ -47,14 +52,20 @@ const AddTeacher = () => {
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => console.log("run"),
       }}
       submitTimeout={2000}
+      // 根据是否有编辑数据调用不同的接口
       onFinish={async (values) => {
-        const res = await request.sgks.teacherAddOrEditCreate(values);
-        message.success("提交成功");
+        await request.sgks.teacherAddOrEditCreate({
+          ...values,
+          id: editData?.teacherId,
+          opt: editData ? 1 : 2,
+        });
+        message.success(editData ? "编辑成功" : "提交成功");
         return true;
       }}
+      // 如果有编辑数据，设置表单的初始值
+      initialValues={editData}
     >
       <ProFormText name="userName" label="教师用户名" />
       <ProFormText name="realName" label="教师姓名" />

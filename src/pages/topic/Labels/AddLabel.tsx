@@ -1,19 +1,31 @@
-import { PlusOutlined } from "@ant-design/icons";
+import request from "@/services/interceptors";
+import { LabelType } from "@/types";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
+import { useEffect } from "react";
 
-const AddLabel = () => {
-  const [form] = Form.useForm<{ name: string; company: string }>();
+const AddLabel = ({ editData }: { editData: LabelType }) => {
+  const [form] = Form.useForm<LabelType>();
+
+  const triggerIcon = editData ? <EditOutlined /> : <PlusOutlined />;
+  const triggerText = editData ? "编辑" : "新建";
+
+  useEffect(() => {
+    if (editData) {
+      form.setFieldsValue(editData);
+    }
+  }, [editData, form]);
+
   return (
     <ModalForm<{
-      name: string;
-      company: string;
+      LabelType;
     }>
       title="新建标签"
       trigger={
         <Button type="primary">
-          <PlusOutlined />
-          新建
+          {triggerIcon}
+          {triggerText}
         </Button>
       }
       labelCol={{ span: 4 }}
@@ -23,11 +35,13 @@ const AddLabel = () => {
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => console.log("run"),
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        console.log(values.name);
+        await request.sgks.lableAddOrEditCreate({
+          ...values,
+          labelId: editData?.labelId,
+        });
         message.success("提交成功");
         return true;
       }}

@@ -82,9 +82,9 @@ const TeacherManage = () => {
         >
           编辑
         </a>,
-        <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>
-          查看
-        </Link>,
+        // <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>
+        //   查看
+        // </Link>,
         <a
           onClick={() => {
             Modal.confirm({
@@ -94,9 +94,9 @@ const TeacherManage = () => {
               okText: "确认",
               cancelText: "取消",
               onOk: async () => {
-                await request.sgks.teacherAbleDelete({
+                await request.sgks.teacherAbleCreate({
                   teacherId: +record.teacherId,
-                  able: 1,
+                  able: 0,
                 });
                 message.success("停用成功");
                 action?.reload();

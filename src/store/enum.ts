@@ -45,6 +45,23 @@ const fetchMajorEnum = async () => {
   }
 };
 
+// const fetchGradeEnum = async () => {
+//   try {
+//     const res = await request.sgks.gradeListList();
+//     return {
+//       majorList: res.data?.map((i) => {
+//         return {
+//           value: i.majorId,
+//           label: i.majorName,
+//         };
+//       }),
+//     };
+//   } catch (error) {
+//     console.error("获取Major枚举值失败:", error);
+//     return { userTypes: [] };
+//   }
+// };
+
 // 统一获取所有枚举值
 const fetchEnumValues = async () => {
   try {

@@ -577,11 +577,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/题库管理
-     * @name QuestionListList
+     * @name QuestionListCreate
      * @summary 查看客观题列表
-     * @request GET:/sgks/question/list
+     * @request POST:/sgks/question/list
      */
-    questionListList: (
+    questionListCreate: (
       body: {
         /** 客观题类型 */
         questionType?: number;
@@ -621,7 +621,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         any
       >({
         path: `/sgks/question/list`,
-        method: "GET",
+        method: "POST",
         body: body,
         type: ContentType.Json,
         format: "json",
@@ -967,21 +967,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         {
-          code: string;
           msg: string;
+          code: string;
           data: {
-            classId: number;
-            /** 年级 */
-            classGrade: number;
-            /** 队别号 */
-            classTeam: number;
-            /** 区队号 */
-            classUnit: number;
-            /** 专业id */
-            majorId: number;
-            /** 专业名称 */
-            majorName: string;
-          }[];
+            totalCount: number;
+            pageSize: number;
+            pageCount?: any;
+            records: {
+              classId: number;
+              classGrade?: any;
+              classTeam: number;
+              classUnit: number;
+              majorId: number;
+              majorName: string;
+            }[];
+            pageNo?: any;
+          };
         },
         any
       >({

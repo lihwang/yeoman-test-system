@@ -6,19 +6,9 @@ import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddStudent from "./AddStudent";
 import { Link } from "react-router-dom";
+import { StudentType } from "@/types";
 
-type StudentItem = {
-  classGrade: number;
-  classTeam: number;
-  classUnit: number;
-  majorId: string;
-  majorName: string;
-  studentId: number;
-  studentName: string;
-  studentNo: string;
-};
-
-const columns: ProColumns<StudentItem>[] = [
+const columns: ProColumns<StudentType>[] = [
   {
     title: "学员ID",
     dataIndex: "studentId",
@@ -95,7 +85,7 @@ const columns: ProColumns<StudentItem>[] = [
 const StudentList = () => {
   const actionRef = useRef<ActionType>(null);
   return (
-    <ProTable<StudentItem>
+    <ProTable<StudentType>
       columns={columns}
       actionRef={actionRef}
       cardBordered
@@ -107,8 +97,8 @@ const StudentList = () => {
           pageSize: params.pageSize,
         });
         return {
-          data: res.data,
-          total: res.data.length,
+          data: res.data.records,
+          total: res.data.totalCount,
         };
       }}
       columnsState={{
