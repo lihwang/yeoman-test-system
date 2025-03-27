@@ -3,8 +3,11 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import request from "@/services/interceptors";
 import { useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { userAtom } from "@/store/indext";
 const Login = () => {
   const [form] = Form.useForm();
+  const [user, setUser] = useAtom(userAtom);
   const { runAsync: mgtLoginCreate, loading } = useRequest(
     request.sgks.mgtLoginCreate,
     { manual: true }
@@ -17,6 +20,7 @@ const Login = () => {
       username,
       password,
     });
+    setUser(data);
     sessionStorage.setItem("token", data.token);
     message.success("登录成功");
     navigate("/");

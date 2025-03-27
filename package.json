@@ -5,7 +5,8 @@
   "type": "module",
   "homepage": "/wj_admin",
   "scripts": {
-    "dev": "vite --mode dev",
+    "dev": "vite --mode prod",
+    "mock": "vite --mode mock",
     "build": "vite build --mode prod",
     "lint": "eslint .",
     "preview": "vite preview",

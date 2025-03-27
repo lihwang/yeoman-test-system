@@ -15,6 +15,53 @@ export interface ExerciseStepsType {
   stepOrder: string;
 }
 
+export interface ExerciseType {
+  exerciseId: number;
+  exerciseType: string;
+  exerciseCode: string;
+  exerciseStem: string;
+  labels?: {
+    labelId: string;
+    labelName: string;
+  }[];
+  createTime: string;
+  updateTime: string;
+  courseName: string;
+  courseId: number;
+}
+
+export interface Response {
+  code: string;
+  msg: string;
+  data?: string;
+}
+
+export interface QuestionType {
+  questionId: number;
+  /** 题目编号 */
+  questionCode: string;
+  /** 题目类型 */
+  questionType: string;
+  /** 课程id */
+  courseId: string;
+  /** 课程名称 */
+  courseName: string;
+  labels: {
+    labelId: number;
+    labelName: string;
+  }[];
+  createTime: string;
+  updateTime: string;
+}
+
+export interface TeacherType {
+  teacherId?: number;
+  realName?: string;
+  userName?: string;
+  courses?: string;
+  majors?: string;
+}
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
 
@@ -280,6 +327,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         majorIds: number[];
         /** 所教班级集合 */
         classIds: number[];
+        /**
+         * 操作类型
+         * 1：新增，2：编辑
+         */
+        opt: number;
       },
       params: RequestParams = {},
     ) =>
@@ -341,11 +393,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/基本功能
-     * @name TeacherAbleDelete
+     * @name TeacherAbleCreate
      * @summary 教师启用or禁用
-     * @request DELETE:/sgks/teacher/able
+     * @request POST:/sgks/teacher/able
      */
-    teacherAbleDelete: (
+    teacherAbleCreate: (
       body: {
         /** 教师id */
         teacherId: number;
@@ -363,7 +415,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         any
       >({
         path: `/sgks/teacher/able`,
-        method: "DELETE",
+        method: "POST",
         body: body,
         type: ContentType.Json,
         format: "json",
@@ -904,6 +956,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         classGrade?: number;
         /** 专业 */
         majorId?: number;
+        /** 队伍号 */
+        classTeam?: number;
+        /** 区队号 */
+        classUnit?: number;
         pageSize: number;
         pageNo: number;
       },
@@ -956,6 +1012,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         classUnit: number;
         /** 专业id */
         majorId: number;
+        opt: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1105,12 +1162,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     studentAddOrEditCreate: (
       body: {
         studentId?: number;
-        studentName?: string;
-        /**
-         * 班级id
-         * 班级=年级+队别+区队+专业
-         */
-        classId?: number;
+        studentName: string;
+        /** 班级id */
+        classId: number;
+        opt: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1174,7 +1229,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags 教师端/学员管理
      * @name StudentGetExamResultsList
-     * @summary 查看需要的考试记录
+     * @summary 查看学员的考试记录
      * @request GET:/sgks/student/getExamResults
      */
     studentGetExamResultsList: (
@@ -1189,7 +1244,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           msg: string;
           data: {
             examId: string;
+            examName: string;
             realStartTime: string;
+            realEndTime: string;
             /** 填空题得分 */
             fbQuestionScore?: number;
             /** 选择题得分 */
@@ -1284,14 +1341,65 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/学员管理
-     * @name ClassTreeList
-     * @summary 班级树
-     * @request GET:/sgks/class/tree
+     * @name ClassTeamListList
+     * @summary 根据年级获取队伍列表
+     * @request GET:/sgks/class/teamList
      */
-    classTreeList: (params: RequestParams = {}) =>
-      this.request<object, any>({
-        path: `/sgks/class/tree`,
+    classTeamListList: (
+      query?: {
+        grade?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: number[];
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/class/teamList`,
         method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags 教师端/学员管理
+     * @name ClassUnitListList
+     * @summary 根据年级和队伍号获取区队列表
+     * @request GET:/sgks/class/unitList
+     */
+    classUnitListList: (
+      query?: {
+        grade?: number;
+        classTeam?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: number[];
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/class/unitList`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),

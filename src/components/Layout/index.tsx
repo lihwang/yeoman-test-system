@@ -7,10 +7,12 @@ import {
 import type { ProSettings } from "@ant-design/pro-components";
 import { PageContainer, ProCard, ProLayout } from "@ant-design/pro-components";
 import { Dropdown, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { menuRoutes, Route } from "@/router";
-import { logout } from "@/store/indext";
+import { logout, userAtom } from "@/store/indext";
+import { useAtom, useAtomValue } from "jotai";
+import { enumValuesLoader } from "@/store/enum";
 
 type MenuItem = {
   path?: string;
@@ -38,6 +40,16 @@ const BackendLaytout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [pathname, setPathname] = useState(location.pathname);
+  const user = useAtomValue(userAtom);
+  const [enumValues, loadEnumValues] = useAtom(enumValuesLoader);
+
+  useEffect(() => {
+    console.log(user.token, enumValues, "enumValues");
+
+    if (user.token && !Object.keys(enumValues).length) {
+      loadEnumValues();
+    }
+  }, [enumValues, loadEnumValues, user.token]);
 
   return (
     <div
@@ -55,7 +67,7 @@ const BackendLaytout = () => {
         avatarProps={{
           src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
           size: "small",
-          title: "七妮妮",
+          title: user.userName,
           render: (_props, dom) => {
             return (
               <Dropdown

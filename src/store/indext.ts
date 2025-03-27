@@ -1,25 +1,16 @@
-import { atom } from 'jotai'
-
+import { atomWithStorage } from "jotai/utils";
 
 interface User {
-  id?: number;
   userName?: string;
-  realName?: string;
-  roleCode?: string;
+  roleCodes?: string;
   token?: string;
+}
+
+const userAtom = atomWithStorage<User>("user", {});
+
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 };
 
-const userAtom = atom<User>({})
-
-
-// const user
-
-const logout=()=>{
-  localStorage.removeItem('token')
-}
-
-
-export {
-    userAtom,
-    logout
-}
+export { userAtom, logout };

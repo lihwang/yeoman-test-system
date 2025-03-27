@@ -7,6 +7,8 @@ import { useRef } from "react";
 import AddTeacher from "./AddTeacher";
 import { Link } from "react-router-dom";
 import EditPassword from "./EditPassword";
+import { useAtomValue } from "jotai";
+import { enumValuesAtom } from "@/store/enum";
 
 type TeacherItem = {
   teacherId: number;
@@ -18,70 +20,96 @@ type TeacherItem = {
   majors: string;
 };
 
-const columns: ProColumns<TeacherItem>[] = [
-  {
-    title: "教师ID",
-    dataIndex: "teacherId",
-    hideInSearch: true,
-  },
-  {
-    title: "教师用户名",
-    dataIndex: "userName",
-  },
-  {
-    title: "教师姓名",
-    dataIndex: "realName",
-  },
-  {
-    title: "所教课程",
-    dataIndex: "courses",
-  },
-  {
-    title: "所教专业",
-    dataIndex: "majors",
-  },
-  {
-    title: "操作",
-    valueType: "option",
-    key: "option",
-    render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.teacherId);
-        }}
-      >
-        编辑
-      </a>,
-      <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>查看</Link>,
-      <a
-        onClick={() => {
-          Modal.confirm({
-            title: "提示",
-            icon: <ExclamationCircleFilled />,
-            content: "确认停用该教师吗？",
-            okText: "确认",
-            cancelText: "取消",
-            onOk: async () => {
-              await request.sgks.teacherAbleDelete({
-                teacherId: +record.teacherId,
-                able: 1,
-              });
-              message.success("停用成功");
-              action?.reload();
-            },
-          });
-        }}
-      >
-        停用
-      </a>,
-      <EditPassword />,
-    ],
-  },
-];
-
 const TeacherManage = () => {
   const actionRef = useRef<ActionType>(null);
+  const { majorList, courseList } = useAtomValue(enumValuesAtom);
+  const columns: ProColumns<TeacherItem>[] = [
+    {
+      title: "教师ID",
+      dataIndex: "teacherId",
+      hideInSearch: true,
+    },
+    {
+      title: "教师用户名",
+      dataIndex: "userName",
+    },
+    {
+      title: "教师姓名",
+      dataIndex: "realName",
+    },
+    {
+      title: "所教课程",
+      dataIndex: "courses",
+      hideInSearch: true,
+    },
+    {
+      title: "所教课程",
+      dataIndex: "courseList",
+      hideInTable: true,
+      filterMultiple: true,
+      valueType: "select",
+      fieldProps: {
+        options: courseList,
+        mode: "multiple",
+      },
+    },
+    {
+      title: "所教专业",
+      dataIndex: "majors",
+      hideInSearch: true,
+    },
+    {
+      title: "所教专业",
+      dataIndex: "majorList",
+      hideInTable: true,
+      filterMultiple: true,
+      valueType: "select",
+      fieldProps: {
+        options: majorList,
+        mode: "multiple",
+      },
+    },
+    {
+      title: "操作",
+      valueType: "option",
+      key: "option",
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.teacherId);
+          }}
+        >
+          编辑
+        </a>,
+        <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>
+          查看
+        </Link>,
+        <a
+          onClick={() => {
+            Modal.confirm({
+              title: "提示",
+              icon: <ExclamationCircleFilled />,
+              content: "确认停用该教师吗？",
+              okText: "确认",
+              cancelText: "取消",
+              onOk: async () => {
+                await request.sgks.teacherAbleDelete({
+                  teacherId: +record.teacherId,
+                  able: 1,
+                });
+                message.success("停用成功");
+                action?.reload();
+              },
+            });
+          }}
+        >
+          停用
+        </a>,
+        <EditPassword />,
+      ],
+    },
+  ];
   return (
     <ProTable<TeacherItem>
       columns={columns}
@@ -137,8 +165,7 @@ const TeacherManage = () => {
         },
       }}
       pagination={{
-        pageSize: 5,
-        onChange: (page) => console.log(page),
+        pageSize: 10,
       }}
       dateFormatter="string"
       // headerTitle="高级表格"
