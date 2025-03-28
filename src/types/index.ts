@@ -98,6 +98,36 @@ interface StudentType {
   studentNo: string;
 }
 
+interface PaperType {
+  /**
+   * 所属课程id
+   */
+  courseId: string;
+  /**
+   * 所属课程名称
+   */
+  courseName: string;
+  createTime: string;
+  /**
+   * 操作题数量
+   */
+  exerciseCount: string;
+  paperId: string;
+  /**
+   * 试卷名称
+   */
+  paperName: string;
+  /**
+   * 客观题数量
+   */
+  questionCount: string;
+  /**
+   * 总分
+   */
+  totalScore: string;
+  updateTime: string;
+}
+
 export type {
   TeacherType,
   LabelType,
@@ -105,4 +135,5 @@ export type {
   OperationType,
   ClassType,
   StudentType,
+  PaperType,
 };

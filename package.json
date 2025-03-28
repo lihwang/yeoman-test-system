@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/wj_admin",
+  "homepage": "/sgks_teacher",
   "scripts": {
     "dev": "vite --mode prod",
     "mock": "vite --mode mock",

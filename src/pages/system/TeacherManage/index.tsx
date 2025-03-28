@@ -5,7 +5,6 @@ import { ProTable } from "@ant-design/pro-components";
 import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddTeacher from "./AddTeacher";
-import EditPassword from "./EditPassword";
 import { useAtomValue } from "jotai";
 import { enumValuesAtom } from "@/store/enum";
 import { TeacherType } from "@/types";

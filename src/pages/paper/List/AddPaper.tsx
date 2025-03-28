@@ -1,5 +1,10 @@
 import request from "@/services/interceptors";
-import { TopicType } from "@/utils/enums";
+import {
+  enumToObject,
+  ExerciseTypeEnum,
+  QuestionTypeEnum,
+  TopicType,
+} from "@/utils/enums";
 import { ObjectiveItem, OperationItem } from "@/utils/types";
 import {
   ProCard,
@@ -7,13 +12,16 @@ import {
   ProList,
   ProTable,
 } from "@ant-design/pro-components";
-import { Tabs } from "antd";
-import { useMemo, useState } from "react";
+import { Button, message, Modal, Tabs } from "antd";
+import { useMemo, useRef, useState } from "react";
 
 type TopicItem = ObjectiveItem | OperationItem;
 
-const SearchTopicList = () => {
+const AddPaper = () => {
   const [topic, setTopic] = useState<TopicType>(TopicType.Objective);
+  const actionRef = useRef<any>(null);
+  const [topicList, setTopicList] = useState<TopicItem[]>([]);
+
   const columns: ProColumns<TopicItem>[] = useMemo(() => {
     return topic === TopicType.Objective
       ? [
@@ -25,6 +33,7 @@ const SearchTopicList = () => {
           {
             title: "问题类型",
             dataIndex: "questionType",
+            valueEnum: enumToObject(QuestionTypeEnum),
           },
           {
             title: "题干",
@@ -44,6 +53,7 @@ const SearchTopicList = () => {
           {
             title: "问题类型",
             dataIndex: "exerciseType",
+            valueEnum: enumToObject(ExerciseTypeEnum),
           },
           {
             title: "题干",
@@ -58,61 +68,76 @@ const SearchTopicList = () => {
 
   const changeTabs = (e) => {
     setTopic(e as any);
+    actionRef.current?.reload();
   };
-
-  return (
-    <>
-      <Tabs
-        activeKey={topic}
-        onChange={changeTabs}
-        items={[
-          {
-            label: "客观题",
-            key: TopicType.Objective,
-          },
-          {
-            label: "操作题",
-            key: TopicType.Objective,
-          },
-        ]}
-      />
-      <ProTable<TopicItem>
-        request={async (params) => {
-          const res =
-            topic === TopicType.Objective
-              ? await request.sgks.questionListList({
-                  pageNo: params.current,
-                  pageSize: params.pageSize,
-                })
-              : await request.sgks.exerciseListCreate({
-                  pageNo: params.current,
-                  pageSize: params.pageSize,
-                });
-
-          return {
-            data: res,
-          };
-        }}
-        toolBarRender={false}
-        search={false}
-        columns={columns}
-      />
-    </>
-  );
-};
-
-const FinalPaper = () => {
-  return <ProList<TopicItem> />;
-};
-
-const AddPaper = () => {
   return (
     <ProCard split="vertical">
-      <ProCard colSpan="50%" ghost>
-        <SearchTopicList />
+      <ProCard colSpan="65%" ghost>
+        <>
+          <Tabs
+            activeKey={topic}
+            onChange={changeTabs}
+            items={[
+              {
+                label: "客观题",
+                key: TopicType.Objective,
+              },
+              {
+                label: "操作题",
+                key: TopicType.Operation,
+              },
+            ]}
+          />
+          <ProTable<TopicItem>
+            actionRef={actionRef}
+            request={async (params) => {
+              const res =
+                topic === TopicType.Objective
+                  ? await request.sgks.questionListCreate({
+                      pageNo: params.current,
+                      pageSize: params.pageSize,
+                    })
+                  : await request.sgks.exerciseListCreate({
+                      pageNo: params.current,
+                      pageSize: params.pageSize,
+                    });
+
+              return {
+                data: res.data,
+              };
+            }}
+            search={{
+              labelWidth: "auto",
+            }}
+            pagination={{
+              pageSize: 10,
+            }}
+            toolBarRender={false}
+            columns={columns}
+          />
+        </>
       </ProCard>
-      <ProCard title="试卷">
-        <FinalPaper />
+      <ProCard>
+        <>
+          <div className="flex justify-between w-full">
+            <span>试卷</span>
+            <Button
+              type="primary"
+              onClick={() => {
+                Modal.confirm({
+                  title: "提示",
+                  content: "确定保存试卷吗？",
+                  onOk: () => {
+                    message.success("保存成功");
+                  },
+                });
+              }}
+            >
+              保存
+            </Button>
+          </div>
+          <ProList<TopicItem> dataSource={topicList} />
+        </>
       </ProCard>
     </ProCard>
   );

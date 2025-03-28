@@ -7,38 +7,9 @@ import { enumToObject, QuestionTypeEnum } from "@/utils/enums";
 import { Button, message, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { PaperType } from "@/types";
 
-type PaperItem = {
-  /**
-   * 所属课程id
-   */
-  courseId: string;
-  /**
-   * 所属课程名称
-   */
-  courseName: string;
-  createTime: string;
-  /**
-   * 操作题数量
-   */
-  exerciseCount: string;
-  paperId: string;
-  /**
-   * 试卷名称
-   */
-  paperName: string;
-  /**
-   * 客观题数量
-   */
-  questionCount: string;
-  /**
-   * 总分
-   */
-  totalScore: string;
-  updateTime: string;
-};
-
-const columns: ProColumns<PaperItem>[] = [
+const columns: ProColumns<PaperType>[] = [
   {
     title: "试卷ID",
     dataIndex: "paperId",
@@ -127,7 +98,7 @@ const PaperList = () => {
   const navigate = useNavigate();
 
   return (
-    <ProTable<PaperItem>
+    <ProTable<PaperType>
       columns={columns}
       actionRef={actionRef}
       cardBordered
