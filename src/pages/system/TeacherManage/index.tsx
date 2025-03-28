@@ -5,25 +5,15 @@ import { ProTable } from "@ant-design/pro-components";
 import { message, Modal } from "antd";
 import { useRef } from "react";
 import AddTeacher from "./AddTeacher";
-import { Link } from "react-router-dom";
 import EditPassword from "./EditPassword";
 import { useAtomValue } from "jotai";
 import { enumValuesAtom } from "@/store/enum";
-
-type TeacherItem = {
-  teacherId: number;
-  teacherUserName: string;
-  teacherRealName: string;
-  /** 逗号隔开，所教课程 */
-  courses: string;
-  /** 逗号隔开，所教专业 */
-  majors: string;
-};
+import { TeacherType } from "@/types";
 
 const TeacherManage = () => {
   const actionRef = useRef<ActionType>(null);
   const { majorList, courseList } = useAtomValue(enumValuesAtom);
-  const columns: ProColumns<TeacherItem>[] = [
+  const columns: ProColumns<TeacherType>[] = [
     {
       title: "教师ID",
       dataIndex: "teacherId",
@@ -74,17 +64,12 @@ const TeacherManage = () => {
       valueType: "option",
       key: "option",
       render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.teacherId);
-          }}
-        >
-          编辑
-        </a>,
-        // <Link to={{ pathname: `/user/teacher/${record.teacherId}` }}>
-        //   查看
-        // </Link>,
+        <AddTeacher
+          key="edit"
+          editData={record}
+          trigger={<a>编辑</a>}
+          onSuccess={() => action?.reload()}
+        />,
         <a
           onClick={() => {
             Modal.confirm({
@@ -106,7 +91,7 @@ const TeacherManage = () => {
         >
           停用
         </a>,
-        <EditPassword />,
+        // <EditPassword />,
       ],
     },
   ];
@@ -170,7 +155,7 @@ const TeacherManage = () => {
       dateFormatter="string"
       // headerTitle="高级表格"
       toolBarRender={() => [
-        <AddTeacher />,
+        <AddTeacher key="add" onSuccess={() => actionRef.current?.reload()} />,
         // <Button
         //   key="button"
         //   icon={<PlusOutlined />}

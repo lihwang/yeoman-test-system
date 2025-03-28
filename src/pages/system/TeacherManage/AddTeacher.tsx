@@ -10,10 +10,16 @@ import {
 import { useAsyncEffect, useRequest } from "ahooks";
 import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+
+interface AddTeacherProps {
+  editData?: TeacherType;
+  trigger?: React.ReactNode;
+  onSuccess?: () => void;
+}
 
 // 新增一个参数用于接收编辑的数据
-const AddTeacher = ({ editData }: { editData?: TeacherType }) => {
+const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
   const [form] = Form.useForm<TeacherType>();
   const { majorList, courseList } = useAtomValue(enumValuesAtom);
   const { runAsync: classListCreateGet } = useRequest(
@@ -23,10 +29,6 @@ const AddTeacher = ({ editData }: { editData?: TeacherType }) => {
     }
   );
 
-  // 根据是否有编辑数据设置弹窗标题和触发按钮图标
-  const title = editData ? "编辑用户" : "新建用户";
-  const triggerIcon = editData ? <EditOutlined /> : <PlusOutlined />;
-  const triggerText = editData ? "编辑" : "新建";
   const [gradeList, setGradeList] = useState([]);
 
   useAsyncEffect(async () => {
@@ -38,12 +40,13 @@ const AddTeacher = ({ editData }: { editData?: TeacherType }) => {
 
   return (
     <ModalForm<TeacherType>
-      title={title}
+      title={editData ? "编辑用户" : "新建用户"}
       trigger={
-        <Button type="primary">
-          {triggerIcon}
-          {triggerText}
-        </Button>
+        trigger || (
+          <Button type="primary" icon={<PlusOutlined />}>
+            新增教师
+          </Button>
+        )
       }
       labelCol={{ span: 4 }}
       layout="horizontal"
@@ -62,6 +65,7 @@ const AddTeacher = ({ editData }: { editData?: TeacherType }) => {
           opt: editData ? 1 : 2,
         });
         message.success(editData ? "编辑成功" : "提交成功");
+        onSuccess?.();
         return true;
       }}
       // 如果有编辑数据，设置表单的初始值
