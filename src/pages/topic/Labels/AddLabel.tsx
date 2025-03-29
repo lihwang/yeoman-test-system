@@ -15,18 +15,23 @@ const AddLabel = ({
   onSuccess?: () => void;
 }) => {
   const [form] = Form.useForm<LabelType>();
-
-  useEffect(() => {
-    if (editData) {
-      form.setFieldsValue(editData);
+  const onOpenChange = (open: boolean) => {
+    if (!open) {
+      form.resetFields();
+    } else {
+      if (editData) {
+        console.log(editData, "editData");
+        form.setFieldsValue(editData);
+      }
     }
-  }, [editData, form]);
+  };
 
   return (
     <ModalForm<{
       LabelType;
     }>
       title={editData ? "编辑标签" : "新建标签"}
+      onOpenChange={onOpenChange}
       trigger={
         trigger || (
           <Button type="primary" icon={<PlusOutlined />}>
