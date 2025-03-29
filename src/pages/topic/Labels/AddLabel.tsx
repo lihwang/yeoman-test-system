@@ -3,13 +3,18 @@ import { LabelType } from "@/types";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
-const AddLabel = ({ editData }: { editData: LabelType }) => {
+const AddLabel = ({
+  editData,
+  trigger,
+  onSuccess,
+}: {
+  editData?: LabelType;
+  trigger?: React.ReactNode;
+  onSuccess?: () => void;
+}) => {
   const [form] = Form.useForm<LabelType>();
-
-  const triggerIcon = editData ? <EditOutlined /> : <PlusOutlined />;
-  const triggerText = editData ? "编辑" : "新建";
 
   useEffect(() => {
     if (editData) {
@@ -21,12 +26,13 @@ const AddLabel = ({ editData }: { editData: LabelType }) => {
     <ModalForm<{
       LabelType;
     }>
-      title="新建标签"
+      title={editData ? "编辑标签" : "新建标签"}
       trigger={
-        <Button type="primary">
-          {triggerIcon}
-          {triggerText}
-        </Button>
+        trigger || (
+          <Button type="primary" icon={<PlusOutlined />}>
+            新增标签
+          </Button>
+        )
       }
       labelCol={{ span: 4 }}
       layout="horizontal"
@@ -38,11 +44,12 @@ const AddLabel = ({ editData }: { editData: LabelType }) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        await request.sgks.lableAddOrEditCreate({
+        await request.sgks.labelAddOrEditCreate({
           ...values,
           labelId: editData?.labelId,
         });
         message.success("提交成功");
+        onSuccess?.();
         return true;
       }}
     >

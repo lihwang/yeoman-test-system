@@ -22,14 +22,12 @@ const columns: ProColumns<LabelType>[] = [
     valueType: "option",
     key: "option",
     render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.labelId);
-        }}
-      >
-        编辑
-      </a>,
+      <AddLabel
+        key="edit"
+        editData={record}
+        trigger={<a>编辑</a>}
+        onSuccess={() => action?.reload()}
+      ></AddLabel>,
       <a
         onClick={() => {
           Modal.confirm({
@@ -39,7 +37,7 @@ const columns: ProColumns<LabelType>[] = [
             okText: "确认",
             cancelText: "取消",
             onOk: async () => {
-              await request.sgks.lableAbleCreate({
+              await request.sgks.labelAbleCreate({
                 labelId: +record.labelId,
                 able: 1,
               });
@@ -81,7 +79,9 @@ const LabelsManage = () => {
         labelWidth: "auto",
       }}
       pagination={false}
-      toolBarRender={() => [<AddLabel />]}
+      toolBarRender={() => [
+        <AddLabel onSuccess={() => actionRef.current?.reload()} />,
+      ]}
     />
   );
 };

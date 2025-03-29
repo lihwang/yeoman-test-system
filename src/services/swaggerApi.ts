@@ -513,11 +513,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/题库管理
-     * @name LableAddOrEditCreate
+     * @name LabelAddOrEditCreate
      * @summary 新增or编辑知识点标签
-     * @request POST:/sgks/lable/addOrEdit
+     * @request POST:/sgks/label/addOrEdit
      */
-    lableAddOrEditCreate: (
+    labelAddOrEditCreate: (
       body: {
         labelId?: number;
         /** 标签名称 */
@@ -533,7 +533,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         },
         any
       >({
-        path: `/sgks/lable/addOrEdit`,
+        path: `/sgks/label/addOrEdit`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -545,11 +545,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/题库管理
-     * @name LableAbleCreate
+     * @name LabelAbleCreate
      * @summary 启用or停用知识点标签
-     * @request POST:/sgks/lable/able
+     * @request POST:/sgks/label/able
      */
-    lableAbleCreate: (
+    labelAbleCreate: (
       body: {
         labelId: number;
         /** 1：启用，0：停用 */
@@ -565,7 +565,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         },
         any
       >({
-        path: `/sgks/lable/able`,
+        path: `/sgks/label/able`,
         method: "POST",
         body: body,
         type: ContentType.Json,
