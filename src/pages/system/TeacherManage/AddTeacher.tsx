@@ -6,6 +6,7 @@ import {
   ModalForm,
   ProFormSelect,
   ProFormText,
+  ProFormTreeSelect,
 } from "@ant-design/pro-components";
 import { useAsyncEffect, useRequest } from "ahooks";
 import { Button, Form, message } from "antd";
@@ -85,12 +86,16 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
         label="专业"
         options={majorList}
       ></ProFormSelect>
-      <ProFormSelect
-        mode="multiple"
+      <ProFormTreeSelect
         name="classIds"
         label="所带班级"
-        options={courseList}
-      ></ProFormSelect>
+        fieldProps={
+          {
+            // treeData: gradeList,
+            // onTreeLoad
+          }
+        }
+      ></ProFormTreeSelect>
       <ProFormText name="project" label="登陆密码" />
     </ModalForm>
   );
