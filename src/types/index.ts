@@ -14,6 +14,7 @@ interface TeacherType {
    * 1：新增，2：编辑
    */
   opt: number;
+  teacherStatus?: number;
 }
 
 interface LabelType {

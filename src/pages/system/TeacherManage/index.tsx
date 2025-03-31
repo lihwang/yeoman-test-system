@@ -59,6 +59,21 @@ const TeacherManage = () => {
       },
     },
     {
+      title: "状态",
+      dataIndex: "teacherStatus",
+      hideInSearch: true,
+      valueEnum: {
+        1: {
+          text: "启用",
+          status: "success",
+        },
+        0: {
+          text: "停用",
+          status: "error",
+        },
+      },
+    },
+    {
       title: "操作",
       valueType: "option",
       key: "option",
@@ -71,16 +86,17 @@ const TeacherManage = () => {
         />,
         <a
           onClick={() => {
+            const teacherText = record.teacherStatus === 0 ? "启用" : "停用";
             Modal.confirm({
               title: "提示",
               icon: <ExclamationCircleFilled />,
-              content: "确认停用该教师吗？",
+              content: `确认${teacherText}该教师吗？`,
               okText: "确认",
               cancelText: "取消",
               onOk: async () => {
                 await request.sgks.teacherAbleCreate({
                   teacherId: +record.teacherId,
-                  able: 0,
+                  able: record.teacherStatus === 0 ? 1 : 0,
                 });
                 message.success("停用成功");
                 action?.reload();

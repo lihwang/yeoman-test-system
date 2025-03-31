@@ -1,10 +1,6 @@
 import request from "@/services/interceptors";
-import { useGetCourseList } from "@/utils";
-import {
-  enumToSelectOptions,
-  QuestionTypeEnum,
-  QuestionTypeList,
-} from "@/utils/enums";
+import { enumValuesAtom } from "@/store/enum";
+import { enumToSelectOptions, QuestionTypeEnum } from "@/utils/enums";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   EditableProTable,
@@ -17,6 +13,7 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
+import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 type DataSourceType = {
@@ -76,7 +73,7 @@ interface FormProps {
 }
 
 const AddObjectiveTopic = () => {
-  const [courseList] = useGetCourseList();
+  const { courseList, labelList } = useAtomValue(enumValuesAtom);
   const [form] = Form.useForm<FormProps>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() =>
     defaultData.map((i, idx) => idx)
@@ -126,12 +123,7 @@ const AddObjectiveTopic = () => {
         name="labels"
         mode="multiple"
         label="标签"
-        options={[
-          {
-            label: "PPT专属",
-            value: 1,
-          },
-        ]}
+        options={labelList}
       />
       <ProFormDependency name={["questionType"]}>
         {({ questionType }) => {

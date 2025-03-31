@@ -40,7 +40,7 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
 
   return (
     <ModalForm<TeacherType>
-      title={editData ? "编辑用户" : "新建用户"}
+      title={editData ? "编辑教师" : "新建教师"}
       trigger={
         trigger || (
           <Button type="primary" icon={<PlusOutlined />}>

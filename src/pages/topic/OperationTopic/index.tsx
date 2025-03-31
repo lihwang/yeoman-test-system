@@ -7,6 +7,8 @@ import { enumToObject, ExerciseTypeEnum } from "@/utils/enums";
 import { message, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { OperationItem } from "@/utils/types";
+import { useAtomValue } from "jotai";
+import { enumValuesAtom } from "@/store/enum";
 
 const columns: ProColumns<OperationItem>[] = [
   {

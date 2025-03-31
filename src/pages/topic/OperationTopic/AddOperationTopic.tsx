@@ -1,4 +1,5 @@
 import request from "@/services/interceptors";
+import { enumValuesAtom } from "@/store/enum";
 import { enumToSelectOptions, ExerciseTypeEnum } from "@/utils/enums";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -9,6 +10,7 @@ import {
   ProFormUploadDragger,
 } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
+import { useAtomValue } from "jotai";
 
 type DataSourceType = {
   exerciseId: number;
@@ -38,6 +40,8 @@ type DataSourceType = {
 
 const AddObjectiveTopic = () => {
   const [form] = Form.useForm<DataSourceType>();
+  const { courseList, labelList } = useAtomValue(enumValuesAtom);
+
   return (
     <ModalForm<DataSourceType>
       title="新建操作题"
@@ -85,24 +89,14 @@ const AddObjectiveTopic = () => {
         required
         name="courseId"
         label="所属课程"
-        options={[
-          {
-            label: "计算机科学与技术",
-            value: 1,
-          },
-        ]}
+        options={courseList}
       />
       <ProFormSelect
         required
         name="labelIds"
         mode="multiple"
         label="标签"
-        options={[
-          {
-            label: "PPT专属",
-            value: 1,
-          },
-        ]}
+        options={labelList}
       />
     </ModalForm>
   );

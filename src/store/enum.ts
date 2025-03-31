@@ -49,12 +49,31 @@ const fetchGradeEnum = async () => {
   try {
     const res = await request.sgks.gradeListList();
     return {
-      majorList: res.data?.map((i) => {
+      gradeList: res.data?.map((i) => {
         return {
-          value: i.majorId,
-          label: i.majorName,
+          value: i,
+          label: i,
         };
       }),
+    };
+  } catch (error) {
+    console.error("获取Major枚举值失败:", error);
+    return { userTypes: [] };
+  }
+};
+
+const fetchLabelEnum = async () => {
+  try {
+    const res = await request.sgks.labelListList();
+    return {
+      labelList: res.data
+        ?.filter((j) => j.labelStatus === 1)
+        ?.map((i) => {
+          return {
+            value: i.labelId,
+            label: i.labelName,
+          };
+        }),
     };
   } catch (error) {
     console.error("获取Major枚举值失败:", error);
@@ -65,15 +84,18 @@ const fetchGradeEnum = async () => {
 // 统一获取所有枚举值
 const fetchEnumValues = async () => {
   try {
-    const [courseData, majorData] = await Promise.all([
+    const [courseData, majorData, gradeList, labelList] = await Promise.all([
       fetchCourseEnum(),
       fetchMajorEnum(),
       fetchGradeEnum(),
+      fetchLabelEnum(),
     ]);
 
     return {
       ...courseData,
       ...majorData,
+      ...gradeList,
+      ...labelList,
     };
   } catch (error) {
     console.error("获取枚举值失败:", error);
