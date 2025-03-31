@@ -45,7 +45,7 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
       trigger={
         trigger || (
           <Button type="primary" icon={<PlusOutlined />}>
-            新增教师
+            新增
           </Button>
         )
       }

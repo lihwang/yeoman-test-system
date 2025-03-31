@@ -35,7 +35,7 @@ const AddLabel = ({
       trigger={
         trigger || (
           <Button type="primary" icon={<PlusOutlined />}>
-            新增标签
+            新增
           </Button>
         )
       }

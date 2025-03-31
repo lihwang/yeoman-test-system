@@ -1,20 +1,34 @@
+import request from "@/services/interceptors";
+import { enumValuesAtom } from "@/store/enum";
 import { PlusOutlined } from "@ant-design/icons";
-import { ModalForm, ProFormText } from "@ant-design/pro-components";
+import {
+  ModalForm,
+  ProFormSelect,
+  ProFormText,
+} from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
+import { useAtomValue } from "jotai";
 
-const AddClass = () => {
+interface AddClassProps {
+  editData?: any;
+  onSuccess?: () => void;
+  trigger?: React.ReactNode;
+}
+const AddClass = ({ editData, onSuccess, trigger }: AddClassProps) => {
   const [form] = Form.useForm<{ name: string; company: string }>();
+  const { gradeList, majorList } = useAtomValue(enumValuesAtom);
   return (
     <ModalForm<{
       name: string;
       company: string;
     }>
-      title="新建班级"
+      title={editData ? "编辑班级" : "新建班级"}
       trigger={
-        <Button type="primary">
-          <PlusOutlined />
-          新建
-        </Button>
+        trigger || (
+          <Button type="primary" icon={<PlusOutlined />}>
+            新增
+          </Button>
+        )
       }
       labelCol={{ span: 4 }}
       layout="horizontal"
@@ -27,15 +41,31 @@ const AddClass = () => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        console.log(values.name);
+        await request.sgks.classAddOrEditCreate({
+          ...values,
+          id: editData?.classId,
+          opt: editData ? 2 : 1,
+        });
         message.success("提交成功");
         return true;
       }}
     >
-      <ProFormText name="classGrade" label="年级" />
-      <ProFormText name="classTeam" label="队别号" />
+      <ProFormSelect
+        fieldProps={{
+          options: gradeList,
+        }}
+        name="classGrade"
+        label="年级"
+      />
+      <ProFormText name="classTeam" label="队伍号" />
       <ProFormText name="classUnit" label="区队号" />
-      <ProFormText name="majorId" label="专业" />
+      <ProFormSelect
+        fieldProps={{
+          options: majorList,
+        }}
+        name="majorId"
+        label="专业"
+      />
     </ModalForm>
   );
 };

@@ -37,9 +37,21 @@ const AddStudent = () => {
       }}
     >
       <ProFormText required name="studentName" label="学员姓名" />
-      <ProFormTreeSelect required name="classId" label="年级" />
-      <ProFormTreeSelect required name="classId" label="队伍号" />
-      <ProFormTreeSelect required name="classId" label="班级" />
+      <ProFormTreeSelect
+        rules={[{ required: true }]}
+        name="classId"
+        label="年级"
+      />
+      <ProFormTreeSelect
+        rules={[{ required: true }]}
+        name="classId"
+        label="队伍号"
+      />
+      <ProFormTreeSelect
+        rules={[{ required: true }]}
+        name="classId"
+        label="班级"
+      />
     </ModalForm>
   );
 };
