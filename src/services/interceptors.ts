@@ -1,7 +1,6 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { Api } from "./swaggerApi";
 import { message } from "antd";
-import { logout } from "@/store/indext";
 //接口地址
 const env = import.meta.env.VITE_APP_ENV;
 export const baseURL = "/";
