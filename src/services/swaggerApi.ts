@@ -590,7 +590,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** 题干 */
         questionStem?: string;
         /** 标签id集合 */
-        labels?: number[];
+        labelIds?: number[];
         pageNo: number;
         pageSize: number;
       },
@@ -664,9 +664,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         }[];
         options: {
           /** abcd */
-          opionSgin: string;
+          optionSign: string;
           /** 选项内容 */
-          opionContent: string;
+          optionContent: string;
+          optionId: number;
         }[];
       },
       params: RequestParams = {},

@@ -25,6 +25,10 @@ interface LabelType {
    * 标签名称
    */
   labelName?: string;
+  /**
+   * 标签状态
+   */
+  labelStatus?: number;
 }
 
 interface ObjectiveType {

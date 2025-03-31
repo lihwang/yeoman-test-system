@@ -18,6 +18,21 @@ const columns: ProColumns<LabelType>[] = [
     dataIndex: "labelName",
   },
   {
+    title: "标签状态",
+    dataIndex: "labelStatus",
+    hideInSearch: true,
+    valueEnum: {
+      1: {
+        text: "启用",
+        status: "success",
+      },
+      0: {
+        text: "停用",
+        status: "error",
+      },
+    },
+  },
+  {
     title: "操作",
     valueType: "option",
     key: "option",
@@ -30,18 +45,19 @@ const columns: ProColumns<LabelType>[] = [
       ></AddLabel>,
       <a
         onClick={() => {
+          const labelText = record.labelStatus === 1 ? "停用" : "启用";
           Modal.confirm({
             title: "提示",
             icon: <ExclamationCircleFilled />,
-            content: "确认停用该标签吗？",
+            content: `确认${labelText}该标签吗？`,
             okText: "确认",
             cancelText: "取消",
             onOk: async () => {
               await request.sgks.labelAbleCreate({
                 labelId: +record.labelId,
-                able: 1,
+                able: record.labelStatus === 1 ? 0 : 1,
               });
-              message.success("停用成功");
+              message.success("操作成功");
               action?.reload();
             },
           });
