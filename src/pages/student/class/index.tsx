@@ -52,14 +52,11 @@ const StudentClass = () => {
       valueType: "option",
       key: "option",
       render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.classid);
-          }}
-        >
-          编辑
-        </a>,
+        <AddClass
+          editData={record}
+          trigger={<a>编辑</a>}
+          onSuccess={() => action?.reload()}
+        />,
         <a
           onClick={() => {
             Modal.confirm({
@@ -106,11 +103,16 @@ const StudentClass = () => {
           option: { fixed: "right", disable: true },
         },
       }}
+      pagination={{
+        pageSize: 10,
+      }}
       rowKey="classId"
       search={{
         labelWidth: "auto",
       }}
-      toolBarRender={() => [<AddClass />]}
+      toolBarRender={() => [
+        <AddClass onSuccess={() => actionRef.current?.reload()} />,
+      ]}
     />
   );
 };

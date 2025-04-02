@@ -8,6 +8,7 @@ import AddTeacher from "./AddTeacher";
 import { useAtomValue } from "jotai";
 import { enumValuesAtom } from "@/store/enum";
 import { TeacherType } from "@/types";
+import EditPassword from "./EditPassword";
 
 const TeacherManage = () => {
   const actionRef = useRef<ActionType>(null);
@@ -106,12 +107,12 @@ const TeacherManage = () => {
         >
           {record.teacherStatus === 0 ? "启用" : "停用"}
         </a>,
-        // <EditPassword />,
+        <EditPassword />,
       ],
     },
   ];
   return (
-    <ProTable<TeacherItem>
+    <ProTable<TeacherType>
       columns={columns}
       actionRef={actionRef}
       cardBordered
@@ -167,20 +168,8 @@ const TeacherManage = () => {
       pagination={{
         pageSize: 10,
       }}
-      dateFormatter="string"
-      // headerTitle="高级表格"
       toolBarRender={() => [
         <AddTeacher key="add" onSuccess={() => actionRef.current?.reload()} />,
-        // <Button
-        //   key="button"
-        //   icon={<PlusOutlined />}
-        //   onClick={() => {
-        //     // actionRef.current?.reload();
-        //   }}
-        //   type="primary"
-        // >
-        //   新建
-        // </Button>,
       ]}
     />
   );

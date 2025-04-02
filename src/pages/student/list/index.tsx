@@ -112,7 +112,9 @@ const StudentList = () => {
       search={{
         labelWidth: "auto",
       }}
-      toolBarRender={() => [<AddStudent />]}
+      toolBarRender={() => [
+        <AddStudent onSuccess={() => actionRef.current?.reload()} />,
+      ]}
     />
   );
 };

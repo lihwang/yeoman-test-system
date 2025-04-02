@@ -133,6 +133,12 @@ interface PaperType {
   updateTime: string;
 }
 
+interface AddEditProps {
+  editData?: any;
+  onSuccess?: () => void;
+  trigger?: React.ReactNode;
+}
+
 export type {
   TeacherType,
   LabelType,
@@ -141,4 +147,7 @@ export type {
   ClassType,
   StudentType,
   PaperType,
+  AddEditProps
 };
+
+

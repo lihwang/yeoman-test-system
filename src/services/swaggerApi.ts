@@ -205,13 +205,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags 教师端/基本功能
+     * @tags 学员端
      * @name MgtLoginCreate
-     * @summary 教师端登录
+     * @summary 学员登录
      * @request POST:/sgks/mgt/login
      */
     mgtLoginCreate: (
-      data: {
+      body: {
         username: string;
         password: string;
       },
@@ -220,18 +220,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<
         {
           code: string;
+          msg: string;
           data: {
-            roleCodes: string[];
+            studentId: number;
+            studentName: string;
+            studentNo: string;
+            /** 所在的班级id */
+            classId: number;
             token: string;
-            username: string;
           };
         },
         any
       >({
         path: `/sgks/mgt/login`,
         method: "POST",
-        body: data,
-        type: ContentType.FormData,
+        body: body,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -477,6 +481,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags 教师端/基本功能
+     * @name TeacherChangeOwnPassCreate
+     * @summary 教师修改自己的密码
+     * @request POST:/sgks/teacher/changeOwnPass
+     */
+    teacherChangeOwnPassCreate: (
+      body: {
+        oldPass: string;
+        newPass: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data?: any;
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/teacher/changeOwnPass`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags 教师端/题库管理
      * @name LabelListList
      * @summary 查看知识点标签列表
@@ -593,6 +632,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         labelIds?: number[];
         pageNo: number;
         pageSize: number;
+        questionStatus: number;
       },
       params: RequestParams = {},
     ) =>
@@ -648,6 +688,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         questionType: number;
         /** 题干 */
         questionStem: string;
+        /**
+         * 操作类型
+         * 1：新增，2：编辑
+         */
+        opt: number;
         /** 所属课程id */
         courseId: number;
         /**
@@ -963,6 +1008,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         classUnit?: number;
         pageSize: number;
         pageNo: number;
+        classStatus: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1019,19 +1065,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
+        any,
         {
-          code: string;
-          msg: string;
-          /** 班级id */
-          data: number;
-        },
-        any
+          message: string;
+        }
       >({
         path: `/sgks/class/addOrEdit`,
         method: "POST",
         body: body,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1125,6 +1167,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         majorId?: number;
         pageNo: number;
         pageSize: number;
+        studentStatus: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1617,7 +1660,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             studentNo: string;
             questionId: number;
             questionType: number;
-            questionStem: string;
             labels: {
               labelId: number;
               labelName: string;
@@ -1747,49 +1789,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 学员端
-     * @name FrontLoginCreate
-     * @summary 学员登录
-     * @request POST:/sgks/front/login
-     */
-    frontLoginCreate: (
-      body: {
-        username: string;
-        password: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          code: string;
-          msg: string;
-          data: {
-            studentId: number;
-            studentName: string;
-            studentNo: string;
-            /** 所在的班级id */
-            classId: number;
-            token: string;
-          };
-        },
-        any
-      >({
-        path: `/sgks/front/login`,
-        method: "POST",
-        body: body,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags 学员端
-     * @name FrontMyInfoList
+     * @name StudentMyInfoList
      * @summary 查看学员自己的基本信息
-     * @request GET:/sgks/front/myInfo
+     * @request GET:/sgks/student/myInfo
      */
-    frontMyInfoList: (params: RequestParams = {}) =>
+    studentMyInfoList: (params: RequestParams = {}) =>
       this.request<
         {
           code: string;
@@ -1806,7 +1810,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         },
         any
       >({
-        path: `/sgks/front/myInfo`,
+        path: `/sgks/student/myInfo`,
         method: "GET",
         format: "json",
         ...params,

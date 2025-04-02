@@ -1,5 +1,6 @@
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
+import { AddEditProps } from "@/types";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
@@ -9,12 +10,7 @@ import {
 import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
 
-interface AddClassProps {
-  editData?: any;
-  onSuccess?: () => void;
-  trigger?: React.ReactNode;
-}
-const AddClass = ({ editData, onSuccess, trigger }: AddClassProps) => {
+const AddClass = ({ editData, onSuccess, trigger }: AddEditProps) => {
   const [form] = Form.useForm<{ name: string; company: string }>();
   const { gradeList, majorList } = useAtomValue(enumValuesAtom);
   return (
@@ -47,19 +43,30 @@ const AddClass = ({ editData, onSuccess, trigger }: AddClassProps) => {
           opt: editData ? 2 : 1,
         });
         message.success("提交成功");
+        onSuccess?.();
         return true;
       }}
     >
       <ProFormSelect
+        rules={[{ required: true }]}
         fieldProps={{
           options: gradeList,
         }}
         name="classGrade"
         label="年级"
       />
-      <ProFormText name="classTeam" label="队伍号" />
-      <ProFormText name="classUnit" label="区队号" />
+      <ProFormText
+        rules={[{ required: true }]}
+        name="classTeam"
+        label="队伍号"
+      />
+      <ProFormText
+        rules={[{ required: true }]}
+        name="classUnit"
+        label="区队号"
+      />
       <ProFormSelect
+        rules={[{ required: true }]}
         fieldProps={{
           options: majorList,
         }}
