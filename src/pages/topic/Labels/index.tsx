@@ -63,7 +63,7 @@ const columns: ProColumns<LabelType>[] = [
           });
         }}
       >
-        停用
+        {record.labelStatus === 1 ? "停用" : "启用"}
       </a>,
     ],
   },

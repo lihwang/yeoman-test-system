@@ -5,7 +5,8 @@
   "type": "module",
   "homepage": "/sgks_teacher",
   "scripts": {
-    "dev": "vite --mode prod",
+    "dev": "vite --mode dev",
+    "prod": "vite --mode prod",
     "mock": "vite --mode mock",
     "build": "vite build --mode prod",
     "lint": "eslint .",

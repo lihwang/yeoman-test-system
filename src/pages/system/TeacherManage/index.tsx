@@ -98,13 +98,13 @@ const TeacherManage = () => {
                   teacherId: +record.teacherId,
                   able: record.teacherStatus === 0 ? 1 : 0,
                 });
-                message.success("停用成功");
+                message.success("操作成功");
                 action?.reload();
               },
             });
           }}
         >
-          停用
+          {record.teacherStatus === 0 ? "启用" : "停用"}
         </a>,
         // <EditPassword />,
       ],

@@ -3,7 +3,7 @@ import { Api } from "./swaggerApi";
 import { message } from "antd";
 //接口地址
 const env = import.meta.env.VITE_APP_ENV;
-export const baseURL = "/";
+export const baseURL = import.meta.env.VITE_APP_BASE_URL;
 const request = new Api({ baseURL });
 
 //添加请求连拦截器
