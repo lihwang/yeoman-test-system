@@ -6,6 +6,9 @@ const env = import.meta.env.VITE_APP_ENV;
 export const baseURL = import.meta.env.VITE_APP_BASE_URL;
 const request = new Api({ baseURL });
 
+const formDataList = [
+    '/sgks/mgt/login'
+]
 //添加请求连拦截器
 request.instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -13,6 +16,9 @@ request.instance.interceptors.request.use(
     const token: string | null = localStorage.getItem("token") || null;
     if (token) {
       config.headers["Authorization"] = `${token}`;
+    }
+    if(formDataList.some(i=>config.url?.includes(i)) ){
+      config.headers["Content-Type"] = "multipart/form-data";
     }
     return config;
   },

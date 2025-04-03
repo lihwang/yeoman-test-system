@@ -235,7 +235,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/sgks/mgt/login`,
         method: "POST",
         body: body,
-        type: ContentType.Json,
+        type: ContentType.FormData,
         format: "json",
         ...params,
       }),
