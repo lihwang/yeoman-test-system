@@ -1453,11 +1453,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags 教师端/学员管理
-     * @name ClassGetByIdsList
+     * @name ClassGetByIdsCreate
      * @summary 批量查看班级详情
-     * @request GET:/sgks/class/getByIds
+     * @request POST:/sgks/class/getByIds
      */
-    classGetByIdsList: (
+    classGetByIdsCreate: (
       body: {
         classIds: number[];
       },
@@ -1476,7 +1476,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         }
       >({
         path: `/sgks/class/getByIds`,
-        method: "GET",
+        method: "POST",
         body: body,
         type: ContentType.Json,
         format: "json",

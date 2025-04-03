@@ -49,14 +49,11 @@ const columns: ProColumns<StudentType>[] = [
     valueType: "option",
     key: "option",
     render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.studentId);
-        }}
-      >
-        编辑
-      </a>,
+      <AddStudent
+        editData={record}
+        trigger={<a>编辑</a>}
+        onSuccess={() => action?.reload()}
+      />,
       <a
         onClick={() => {
           Modal.confirm({

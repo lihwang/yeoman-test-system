@@ -1,7 +1,7 @@
 import ClassSelect from "@/components/ClassSelect";
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
-import { AddEditProps, StudentType } from "@/types";
+import { AddEditProps, ClassType, StudentType } from "@/types";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
@@ -9,13 +9,18 @@ import {
   ProFormText,
 } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
+import { useState } from "react";
 
-const AddStudent = ({ onSuccess, editData }: AddEditProps) => {
+const AddStudent = ({ onSuccess, editData, trigger }: AddEditProps) => {
   const [form] = Form.useForm<StudentType>();
+  const [initClass, setInitClass] = useState<ClassType[]>([]);
   const onOpenChange = (visible: boolean) => {
     if (visible) {
       if (editData) {
-        form.setFieldsValue(editData);
+        setInitClass([{ ...editData }]);
+        setTimeout(() => {
+          form.setFieldsValue({ ...editData, classId: [editData.classId] });
+        });
       }
     }
   };
@@ -23,12 +28,13 @@ const AddStudent = ({ onSuccess, editData }: AddEditProps) => {
   return (
     <ModalForm<StudentType>
       onOpenChange={onOpenChange}
-      title="新建学员"
+      title={editData ? "编辑学员" : "新建学员"}
       trigger={
-        <Button type="primary">
-          <PlusOutlined />
-          新建
-        </Button>
+        trigger || (
+          <Button type="primary" icon={<PlusOutlined />}>
+            新增
+          </Button>
+        )
       }
       labelCol={{ span: 4 }}
       layout="horizontal"
@@ -65,7 +71,7 @@ const AddStudent = ({ onSuccess, editData }: AddEditProps) => {
         name="classId"
         label="班级"
       >
-        <ClassSelect multiple={false} />
+        <ClassSelect initClass={initClass} multiple={false} />
       </ProFormItem>
     </ModalForm>
   );

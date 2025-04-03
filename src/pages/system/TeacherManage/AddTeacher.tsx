@@ -1,7 +1,7 @@
 import ClassSelect from "@/components/ClassSelect";
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
-import { TeacherType } from "@/types";
+import { ClassType, TeacherType } from "@/types";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
@@ -11,7 +11,7 @@ import {
 } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
-import React from "react";
+import React, { useState } from "react";
 
 interface AddTeacherProps {
   editData?: TeacherType;
@@ -23,15 +23,18 @@ interface AddTeacherProps {
 const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
   const [form] = Form.useForm<TeacherType>();
   const { majorList, courseList } = useAtomValue(enumValuesAtom);
-
+  const [initClass, setInitClass] = useState<ClassType[]>([]);
   const onOpenChange = async (open: boolean) => {
     if (open) {
       if (editData?.teacherId) {
-        const res = await request.sgks.teacherGetList({
+        const res: any = await request.sgks.teacherGetList({
           teacherId: editData.teacherId,
         });
-        console.log(res.data);
-        form.setFieldsValue({ ...editData });
+        setInitClass(res.data?.classes);
+        const classIds = res.data?.classes?.map((item: any) => item.classId);
+        const majorIds = res.data?.majors?.map((item: any) => item.majorId);
+        const courseIds = res.data?.courses?.map((item: any) => item.courseId);
+        form.setFieldsValue({ ...res.data, majorIds, courseIds, classIds });
       }
     }
   };
@@ -60,7 +63,7 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
       onFinish={async (values) => {
         await request.sgks.teacherAddOrEditCreate({
           ...values,
-          id: editData?.teacherId,
+          teacherId: editData?.teacherId,
           opt: editData ? 2 : 1,
         });
         message.success(editData ? "编辑成功" : "提交成功");
@@ -95,13 +98,15 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
         options={majorList}
       ></ProFormSelect>
       <ProFormItem label="班级" name="classIds" rules={[{ required: true }]}>
-        <ClassSelect />
+        <ClassSelect initClass={initClass} />
       </ProFormItem>
-      <ProFormText
-        name="teacherPass"
-        label="登陆密码"
-        rules={[{ required: true }]}
-      />
+      {!editData && (
+        <ProFormText
+          name="teacherPass"
+          label="登陆密码"
+          rules={[{ required: true }]}
+        />
+      )}
     </ModalForm>
   );
 };

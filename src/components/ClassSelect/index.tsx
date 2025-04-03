@@ -12,12 +12,14 @@ interface ClassSelectProps {
   value?: number[];
   onChange?: (value: number[]) => void;
   multiple?: boolean;
+  initClass?: ClassType[];
 }
 
 const ClassSelect: React.FC<ClassSelectProps> = ({
   value = [],
   onChange,
   multiple = true,
+  initClass,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<ClassType[]>([]);
@@ -25,16 +27,12 @@ const ClassSelect: React.FC<ClassSelectProps> = ({
   const actionRef = useRef<ActionType>(null);
   const { majorList, gradeList } = useAtomValue(enumValuesAtom);
   // 初始化已选数据
-  useAsyncEffect(async () => {
-    if (Array.isArray(value) ? !!value?.length : !!value) {
-      const classIds = Array.isArray(value) ? value : [value];
-      const res = await request.sgks.classGetByIdsList({
-        classIds: classIds,
-      });
-      setSelectedRows(res.data.records || []);
-      setSelectedKeys(value);
+  useEffect(() => {
+    if (initClass.length) {
+      setSelectedRows(initClass);
+      setSelectedKeys(initClass.map((item) => item.classId));
     }
-  }, [value]);
+  }, [initClass]);
 
   // 处理选择变化
   const handleSelectionChange = (keys: any[], rows: ClassType[]) => {
@@ -81,6 +79,7 @@ const ClassSelect: React.FC<ClassSelectProps> = ({
       hideInSearch: true,
     },
   ];
+  console.log(selectedKeys, "selectedKeys");
 
   return (
     <>
