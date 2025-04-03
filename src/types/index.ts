@@ -73,7 +73,7 @@ interface ClassType {
    * 年级
    */
   classGrade: number;
-  classid: number;
+  classId: number;
   /**
    * 队别号
    */
@@ -85,7 +85,7 @@ interface ClassType {
   /**
    * 专业id
    */
-  majorid: number;
+  majorId: number;
   /**
    * 专业名称
    */

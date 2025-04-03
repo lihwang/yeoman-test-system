@@ -235,7 +235,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/sgks/mgt/login`,
         method: "POST",
         body: body,
-        type: ContentType.FormData,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -1445,6 +1445,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/sgks/class/unitList`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags 教师端/学员管理
+     * @name ClassGetByIdsList
+     * @summary 批量查看班级详情
+     * @request GET:/sgks/class/getByIds
+     */
+    classGetByIdsList: (
+      body: {
+        classIds: number[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: object[];
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/class/getByIds`,
+        method: "GET",
+        body: body,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

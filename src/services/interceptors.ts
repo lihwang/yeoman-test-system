@@ -32,7 +32,7 @@ request.instance.interceptors.request.use(
 //添加响应拦截器
 request.instance.interceptors.response.use(
   (response: AxiosResponse) => {
-    if (response.data.code !== "200" && env === "prod") {
+    if (response.data.code !== "200") {
       message.error(response.data.msg);
       return Promise.reject(response.data);
     }

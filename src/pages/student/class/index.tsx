@@ -67,7 +67,7 @@ const StudentClass = () => {
               cancelText: "取消",
               onOk: async () => {
                 await request.sgks.classDeleteDelete({
-                  classId: +record.classid,
+                  classId: +record.classId,
                 });
                 message.success("删除成功");
                 action?.reload();
@@ -85,7 +85,7 @@ const StudentClass = () => {
       columns={columns}
       actionRef={actionRef}
       cardBordered
-      request={async (params) => {
+      request={async (params: any) => {
         const res = await request.sgks.classListCreate({
           ...params,
           pageNo: params.current,

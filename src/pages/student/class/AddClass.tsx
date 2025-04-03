@@ -1,6 +1,6 @@
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
-import { AddEditProps } from "@/types";
+import { AddEditProps, ClassType } from "@/types";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
@@ -9,15 +9,24 @@ import {
 } from "@ant-design/pro-components";
 import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
+import { useEffect } from "react";
 
 const AddClass = ({ editData, onSuccess, trigger }: AddEditProps) => {
-  const [form] = Form.useForm<{ name: string; company: string }>();
+  const [form] = Form.useForm<ClassType>();
   const { gradeList, majorList } = useAtomValue(enumValuesAtom);
+
+  useEffect(() => {
+    if (editData) {
+      form.setFieldsValue({
+        classGrade: editData?.classGrade,
+        classTeam: editData?.classTeam,
+        classUnit: editData?.classUnit,
+        majorId: editData?.majorId,
+      });
+    }
+  }, [editData]);
   return (
-    <ModalForm<{
-      name: string;
-      company: string;
-    }>
+    <ModalForm<ClassType>
       title={editData ? "编辑班级" : "新建班级"}
       trigger={
         trigger || (
@@ -39,7 +48,7 @@ const AddClass = ({ editData, onSuccess, trigger }: AddEditProps) => {
       onFinish={async (values) => {
         await request.sgks.classAddOrEditCreate({
           ...values,
-          id: editData?.classId,
+          classId: editData?.classId,
           opt: editData ? 2 : 1,
         });
         message.success("提交成功");

@@ -139,7 +139,7 @@ const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
         <ClassSelect />
       </ProFormItem>
       <ProFormText
-        name="project"
+        name="teacherPass"
         label="登陆密码"
         rules={[{ required: true }]}
       />
