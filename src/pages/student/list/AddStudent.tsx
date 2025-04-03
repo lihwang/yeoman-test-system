@@ -6,46 +6,23 @@ import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
   ProFormItem,
-  ProFormSelect,
   ProFormText,
-  ProFormTreeSelect,
 } from "@ant-design/pro-components";
-import { Button, Form, message, SelectProps } from "antd";
-import { useAtomValue } from "jotai";
-import { useState } from "react";
+import { Button, Form, message } from "antd";
 
 const AddStudent = ({ onSuccess, editData }: AddEditProps) => {
   const [form] = Form.useForm<StudentType>();
-  // const { gradeList } = useAtomValue(enumValuesAtom);
-  // const [teamList, setTeamList] = useState<SelectProps["options"]>([]);
-  // const [classList, setClassList] = useState<SelectProps["options"]>([]);
-
-  // const changeGrade = async (value: number) => {
-  //   const res: any = await request.sgks.classTeamListList({ grade: value });
-  //   setTeamList(
-  //     [...new Set(res.data)].map((item: any) => ({
-  //       label: item,
-  //       value: item,
-  //     }))
-  //   );
-  // };
-
-  // const changeTeam = async (value: number) => {
-  //   const grade = form.getFieldValue("classGrade");
-  //   const res: any = await request.sgks.classUnitListList({
-  //     classTeam: value,
-  //     grade,
-  //   });
-  //   setClassList(
-  //     [...new Set(res.data)].map((item: any) => ({
-  //       label: item,
-  //       value: item,
-  //     }))
-  //   );
-  // };
+  const onOpenChange = (visible: boolean) => {
+    if (visible) {
+      if (editData) {
+        form.setFieldsValue(editData);
+      }
+    }
+  };
 
   return (
     <ModalForm<StudentType>
+      onOpenChange={onOpenChange}
       title="新建学员"
       trigger={
         <Button type="primary">

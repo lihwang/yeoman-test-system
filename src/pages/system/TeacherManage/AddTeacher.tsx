@@ -2,19 +2,16 @@ import ClassSelect from "@/components/ClassSelect";
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
 import { TeacherType } from "@/types";
-import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
   ProFormItem,
   ProFormSelect,
   ProFormText,
-  ProFormTreeSelect,
 } from "@ant-design/pro-components";
-import { useAsyncEffect, useRequest } from "ahooks";
-import { Button, Form, message, TreeSelectProps } from "antd";
-import { DefaultOptionType } from "antd/es/select";
+import { Button, Form, message } from "antd";
 import { useAtomValue } from "jotai";
-import React, { use, useEffect, useMemo, useState } from "react";
+import React from "react";
 
 interface AddTeacherProps {
   editData?: TeacherType;
@@ -22,64 +19,26 @@ interface AddTeacherProps {
   onSuccess?: () => void;
 }
 
-interface GradeClassType {
-  label: string;
-  value: string;
-  children?: GradeClassType[];
-}
-
 // 新增一个参数用于接收编辑的数据
 const AddTeacher = ({ editData, onSuccess, trigger }: AddTeacherProps) => {
   const [form] = Form.useForm<TeacherType>();
-  const { majorList, courseList, gradeList } = useAtomValue(enumValuesAtom);
-  const [treeData, setTreeData] =
-    useState<Omit<DefaultOptionType, "label">[]>();
+  const { majorList, courseList } = useAtomValue(enumValuesAtom);
 
-  const onLoadData: TreeSelectProps["loadData"] = async ({ level, value }) => {
-    // setTreeData(treeData.concat([]));
-    if (level === 0) {
-      const res = await request.sgks.classTeamListList({ grade: +value });
+  const onOpenChange = async (open: boolean) => {
+    if (open) {
+      if (editData?.teacherId) {
+        const res = await request.sgks.teacherGetList({
+          teacherId: editData.teacherId,
+        });
+        console.log(res.data);
+        form.setFieldsValue({ ...editData });
+      }
     }
-    return undefined;
   };
-
-  const { runAsync: classListCreateGet } = useRequest(
-    request.sgks.classListCreate,
-    {
-      manual: true,
-    }
-  );
-
-  useEffect(() => {
-    setTreeData(
-      gradeList?.map((i) => {
-        return {
-          level: 0,
-          value: i.value,
-          label: i.label,
-          isLeaf: false,
-          disableCheckbox: true,
-          selectable: false,
-        };
-      }) ?? []
-    );
-  }, [gradeList]);
-
-  useAsyncEffect(async () => {
-    if (editData?.teacherId) {
-      const res = await request.sgks.teacherGetList({
-        teacherId: editData.teacherId,
-      });
-      console.log(res.data);
-      form.setFieldsValue({ ...editData });
-    }
-    // const res = await classListCreateGet({ pageNo: 1, pageSize: 1000,classGrade: });
-    // const res = await request.sgks.gradeListList({});
-    // setGradeList(res.data.);
-  }, []);
 
   return (
     <ModalForm<TeacherType>
+      onOpenChange={onOpenChange}
       title={editData ? "编辑教师" : "新建教师"}
       trigger={
         trigger || (

@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai";
 import { enumValuesAtom } from "@/store/enum";
 import { useEffect, useRef, useState } from "react";
 import request from "@/services/interceptors";
+import { useAsyncEffect } from "ahooks";
 
 interface ClassSelectProps {
   value?: number[];
@@ -24,17 +25,15 @@ const ClassSelect: React.FC<ClassSelectProps> = ({
   const actionRef = useRef<ActionType>(null);
   const { majorList, gradeList } = useAtomValue(enumValuesAtom);
   // 初始化已选数据
-  useEffect(() => {
-    // const fetchSelectedData = async () => {
-    //   if (value?.length) {
-    //     const res = await request.sgks.classListCreate({
-    //       classIds: value,
-    //     });
-    //     setSelectedRows(res.data.records || []);
-    //     setSelectedKeys(value);
-    //   }
-    // };
-    // fetchSelectedData();
+  useAsyncEffect(async () => {
+    if (Array.isArray(value) ? !!value?.length : !!value) {
+      const classIds = Array.isArray(value) ? value : [value];
+      const res = await request.sgks.classGetByIdsList({
+        classIds: classIds,
+      });
+      setSelectedRows(res.data.records || []);
+      setSelectedKeys(value);
+    }
   }, [value]);
 
   // 处理选择变化
