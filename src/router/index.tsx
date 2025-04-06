@@ -5,6 +5,7 @@ import user from "./user";
 import topic from "./topic";
 import paper from "./paper";
 import student from "./student";
+import EditPassword from "@/pages/system/TeacherManage/EditPassword";
 export type Route = RouteObject & {
   path: string;
   name?: string;
@@ -15,7 +16,17 @@ export type Route = RouteObject & {
   hidden?: boolean;
 };
 
-export const menuRoutes = [...user, ...topic, ...student, ...paper];
+export const menuRoutes = [
+  ...user,
+  ...topic,
+  ...student,
+  ...paper,
+  {
+    path: "editPass",
+    name: "修改密码",
+    element: <EditPassword />,
+  },
+];
 
 const routes: Route[] = [
   {

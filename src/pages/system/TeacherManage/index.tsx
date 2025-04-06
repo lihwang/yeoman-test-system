@@ -107,7 +107,7 @@ const TeacherManage = () => {
         >
           {record.teacherStatus === 0 ? "启用" : "停用"}
         </a>,
-        <EditPassword />,
+        // <EditPassword />,
       ],
     },
   ];
