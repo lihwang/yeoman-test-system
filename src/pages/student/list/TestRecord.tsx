@@ -1,3 +1,4 @@
+import { ProTable } from "@ant-design/pro-components";
 import { useParams } from "react-router-dom";
 
 const TestRecord = () => {
@@ -6,7 +7,7 @@ const TestRecord = () => {
 
   return (
     <ProTable<TableListItem>
-      dataSource={tableListDataSource}
+      // dataSource={tableListDataSource}
       rowKey="key"
       pagination={{
         showQuickJumper: true,
