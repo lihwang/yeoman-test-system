@@ -6,6 +6,8 @@ import topic from "./topic";
 import paper from "./paper";
 import student from "./student";
 import EditPassword from "@/pages/system/TeacherManage/EditPassword";
+import { CreditCardOutlined } from "@ant-design/icons";
+import recommend from "./recommend";
 export type Route = RouteObject & {
   path: string;
   name?: string;
@@ -21,9 +23,11 @@ export const menuRoutes = [
   ...topic,
   ...student,
   ...paper,
+  ...recommend,
   {
     path: "editPass",
     name: "修改密码",
+    icon: <CreditCardOutlined />,
     element: <EditPassword />,
   },
 ];
