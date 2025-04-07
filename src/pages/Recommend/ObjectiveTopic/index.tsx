@@ -9,8 +9,8 @@ import { ObjectiveType } from "@/types";
 
 const columns: ProColumns<ObjectiveType>[] = [
   {
-    title: "题目ID",
-    dataIndex: "questionId",
+    title: "学员ID",
+    dataIndex: "studentId",
     hideInSearch: true,
     hideInTable: true,
   },
@@ -85,9 +85,6 @@ const columns: ProColumns<ObjectiveType>[] = [
             okText: "确认",
             cancelText: "取消",
             onOk: async () => {
-              await request.sgks.quesionDeleteDelete({
-                questionId: +record.questionId,
-              });
               message.success("删除成功");
               action?.reload();
             },
@@ -110,7 +107,7 @@ const ObjectiveTopic = () => {
       cardBordered
       request={async (params, sort, filter) => {
         console.log(params, sort, filter);
-        const res = await request.sgks.questionListCreate({
+        const res = await request.sgks.recommendQuestionListCreate({
           ...params,
           pageNo: params.current,
           pageSize: params.pageSize,

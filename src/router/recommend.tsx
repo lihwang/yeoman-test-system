@@ -5,7 +5,7 @@ import ObjectiveTopic from "@/pages/Recommend/ObjectiveTopic";
 const recommend: Route[] = [
   {
     path: "recommend",
-    name: "学员推荐列表",
+    name: "智能推荐",
     icon: <AimOutlined />,
     children: [
       {
