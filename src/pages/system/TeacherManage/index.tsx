@@ -8,7 +8,6 @@ import AddTeacher from "./AddTeacher";
 import { useAtomValue } from "jotai";
 import { enumValuesAtom } from "@/store/enum";
 import { TeacherType } from "@/types";
-import EditPassword from "./EditPassword";
 
 const TeacherManage = () => {
   const actionRef = useRef<ActionType>(null);
@@ -165,9 +164,9 @@ const TeacherManage = () => {
           return values;
         },
       }}
-      pagination={{
-        pageSize: 10,
-      }}
+      // pagination={{
+      //   pageSize: 10,
+      // }}
       toolBarRender={() => [
         <AddTeacher key="add" onSuccess={() => actionRef.current?.reload()} />,
       ]}
