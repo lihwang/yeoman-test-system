@@ -64,11 +64,7 @@ const AddClass = ({ editData, onSuccess, trigger }: AddEditProps) => {
         name="classGrade"
         label="年级"
       />
-      <ProFormText
-        rules={[{ required: true }]}
-        name="classTeam"
-        label="队伍号"
-      />
+      <ProFormText rules={[{ required: true }]} name="classTeam" label="队别" />
       <ProFormText
         rules={[{ required: true }]}
         name="classUnit"

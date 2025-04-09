@@ -55,7 +55,7 @@ const ClassSelect: React.FC<ClassSelectProps> = ({
       },
     },
     {
-      title: "队伍号",
+      title: "队别",
       dataIndex: "classTeam",
       hideInSearch: true,
     },

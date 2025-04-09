@@ -24,7 +24,7 @@ const StudentClass = () => {
       dataIndex: "classGrade",
     },
     {
-      title: "队伍号",
+      title: "队别",
       dataIndex: "classTeam",
       hideInSearch: true,
     },

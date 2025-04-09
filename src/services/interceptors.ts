@@ -2,13 +2,11 @@ import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { Api } from "./swaggerApi";
 import { message } from "antd";
 //接口地址
-const env = import.meta.env.VITE_APP_ENV;
 export const baseURL = import.meta.env.VITE_APP_BASE_URL;
 const request = new Api({ baseURL });
+request.instance.defaults.withCredentials = true;
 
-const formDataList = [
-    '/sgks/mgt/login'
-]
+const formDataList = ["/sgks/mgt/login"];
 //添加请求连拦截器
 request.instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -17,7 +15,7 @@ request.instance.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `${token}`;
     }
-    if(formDataList.some(i=>config.url?.includes(i)) ){
+    if (formDataList.some((i) => config.url?.includes(i))) {
       config.headers["Content-Type"] = "multipart/form-data";
     }
     return config;

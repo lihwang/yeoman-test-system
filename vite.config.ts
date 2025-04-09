@@ -20,6 +20,12 @@ export default defineConfig({
       "/sgks/": {
         target: "http://121.40.216.86/", //目标请求的地址
         changeOrigin: true,
+        cookieDomainRewrite: {
+          "*": "", // 将所有域名重写为空，即使用当前域名
+        },
+        cookiePathRewrite: {
+          "*": "/", // 重写所有cookie的路径为根路径
+        },
       },
     },
   },
