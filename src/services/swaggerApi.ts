@@ -62,19 +62,12 @@ export interface TeacherType {
   majors?: string;
 }
 
-import type {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  HeadersDefaults,
-  ResponseType,
-} from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
 
-export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
+export interface FullRequestParams extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -89,15 +82,11 @@ export interface FullRequestParams
   body?: unknown;
 }
 
-export type RequestParams = Omit<
-  FullRequestParams,
-  "body" | "method" | "query" | "path"
->;
+export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
-export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
+export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
   securityWorker?: (
-    securityData: SecurityDataType | null
+    securityData: SecurityDataType | null,
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
   secure?: boolean;
   format?: ResponseType;
@@ -117,16 +106,8 @@ export class HttpClient<SecurityDataType = unknown> {
   private secure?: boolean;
   private format?: ResponseType;
 
-  constructor({
-    securityWorker,
-    secure,
-    format,
-    ...axiosConfig
-  }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({
-      ...axiosConfig,
-      baseURL: axiosConfig.baseURL || "",
-    });
+  constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || "" });
     this.secure = secure;
     this.format = format;
     this.securityWorker = securityWorker;
@@ -136,10 +117,7 @@ export class HttpClient<SecurityDataType = unknown> {
     this.securityData = data;
   };
 
-  protected mergeRequestParams(
-    params1: AxiosRequestConfig,
-    params2?: AxiosRequestConfig
-  ): AxiosRequestConfig {
+  protected mergeRequestParams(params1: AxiosRequestConfig, params2?: AxiosRequestConfig): AxiosRequestConfig {
     const method = params1.method || (params2 && params2.method);
 
     return {
@@ -147,11 +125,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method &&
-          this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
-          ]) ||
-          {}),
+        ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
       },
@@ -172,15 +146,11 @@ export class HttpClient<SecurityDataType = unknown> {
     }
     return Object.keys(input || {}).reduce((formData, key) => {
       const property = input[key];
-      const propertyContent: any[] =
-        property instanceof Array ? property : [property];
+      const propertyContent: any[] = property instanceof Array ? property : [property];
 
       for (const formItem of propertyContent) {
         const isFileType = formItem instanceof Blob || formItem instanceof File;
-        formData.append(
-          key,
-          isFileType ? formItem : this.stringifyFormItem(formItem)
-        );
+        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem));
       }
 
       return formData;
@@ -204,21 +174,11 @@ export class HttpClient<SecurityDataType = unknown> {
     const requestParams = this.mergeRequestParams(params, secureParams);
     const responseFormat = format || this.format || undefined;
 
-    if (
-      type === ContentType.FormData &&
-      body &&
-      body !== null &&
-      typeof body === "object"
-    ) {
+    if (type === ContentType.FormData && body && body !== null && typeof body === "object") {
       body = this.createFormData(body as Record<string, unknown>);
     }
 
-    if (
-      type === ContentType.Text &&
-      body &&
-      body !== null &&
-      typeof body !== "string"
-    ) {
+    if (type === ContentType.Text && body && body !== null && typeof body !== "string") {
       body = JSON.stringify(body);
     }
 
@@ -240,14 +200,11 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title 学员计算机应用能力智能综合考测平台
  * @version 1.0.0
  */
-export class Api<
-  SecurityDataType extends unknown,
-> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   sgks = {
     /**
      * No description
      *
-     * @tags 学员端
      * @name MgtLoginCreate
      * @summary 学员登录
      * @request POST:/sgks/mgt/login
@@ -257,7 +214,7 @@ export class Api<
         username: string;
         password: string;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -285,7 +242,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name MgtLogOutList
      * @summary 教师端登出
      * @request GET:/sgks/mgt/logOut
@@ -308,7 +264,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherListCreate
      * @summary 查看教师列表
      * @request POST:/sgks/teacher/list
@@ -323,7 +278,7 @@ export class Api<
         pageNo: number;
         pageSize: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -356,7 +311,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherAddOrEditCreate
      * @summary 新增&编辑教师
      * @request POST:/sgks/teacher/addOrEdit
@@ -379,7 +333,7 @@ export class Api<
          */
         opt: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -401,7 +355,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherGetList
      * @summary 查看教师详情
      * @request GET:/sgks/teacher/get
@@ -411,7 +364,7 @@ export class Api<
         /** 教师id */
         teacherId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -438,7 +391,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherAbleCreate
      * @summary 教师启用or禁用
      * @request POST:/sgks/teacher/able
@@ -450,7 +402,7 @@ export class Api<
         /** 1：启用，0：禁用 */
         able: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -471,7 +423,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name CourseAllList
      * @summary 获取所有课程的列表
      * @request GET:/sgks/course/all
@@ -497,7 +448,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name MajorAllList
      * @summary 获取所有专业的列表
      * @request GET:/sgks/major/all
@@ -523,7 +473,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/基本功能
      * @name TeacherChangeOwnPassCreate
      * @summary 教师修改自己的密码
      * @request POST:/sgks/teacher/changeOwnPass
@@ -533,7 +482,7 @@ export class Api<
         oldPass: string;
         newPass: string;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -558,7 +507,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name LabelListList
      * @summary 查看知识点标签列表
      * @request GET:/sgks/label/list
@@ -568,7 +516,7 @@ export class Api<
         /** 标签名称 */
         labelName?: string;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -593,7 +541,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name LabelAddOrEditCreate
      * @summary 新增or编辑知识点标签
      * @request POST:/sgks/label/addOrEdit
@@ -604,7 +551,7 @@ export class Api<
         /** 标签名称 */
         labelName: string;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -625,7 +572,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name LabelAbleCreate
      * @summary 启用or停用知识点标签
      * @request POST:/sgks/label/able
@@ -636,7 +582,7 @@ export class Api<
         /** 1：启用，0：停用 */
         able: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -657,7 +603,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionListCreate
      * @summary 查看客观题列表
      * @request POST:/sgks/question/list
@@ -676,7 +621,7 @@ export class Api<
         pageSize: number;
         questionStatus: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -713,7 +658,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionAddOrEditCreate
      * @summary 添加or编辑客观题
      * @request POST:/sgks/question/addOrEdit
@@ -757,7 +701,7 @@ export class Api<
           optionId: number;
         }[];
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -778,7 +722,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name QuestionGetList
      * @summary 查看客观题详情
      * @request GET:/sgks/question/get
@@ -787,7 +730,7 @@ export class Api<
       query?: {
         questionId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -807,7 +750,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseListCreate
      * @summary 查看操作题列表
      * @request POST:/sgks/exercise/list
@@ -824,7 +766,7 @@ export class Api<
         pageNo: number;
         pageSize: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -858,7 +800,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseAddOrEditCreate
      * @summary 新增or编辑操作题
      * @request POST:/sgks/exercise/addOrEdit
@@ -890,7 +831,7 @@ export class Api<
         labelIds: number[];
         exerciseSteps: ExerciseStepsType[];
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -912,7 +853,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseGetList
      * @summary 查看操作题详情
      * @request GET:/sgks/exercise/get
@@ -921,7 +861,7 @@ export class Api<
       query?: {
         exerciseId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -975,16 +915,15 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
-     * @name QuesionDeleteDelete
+     * @name QuestionDeleteDelete
      * @summary 删除客观题
-     * @request DELETE:/sgks/quesion/delete
+     * @request DELETE:/sgks/question/delete
      */
-    quesionDeleteDelete: (
+    questionDeleteDelete: (
       query?: {
         questionId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -994,7 +933,7 @@ export class Api<
         },
         any
       >({
-        path: `/sgks/quesion/delete`,
+        path: `/sgks/question/delete`,
         method: "DELETE",
         query: query,
         format: "json",
@@ -1004,7 +943,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/题库管理
      * @name ExerciseDeleteList
      * @summary 删除操作题
      * @request GET:/sgks/exercise/delete
@@ -1013,7 +951,7 @@ export class Api<
       query?: {
         exerciseId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1033,7 +971,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassListCreate
      * @summary 查看班级列表
      * @request POST:/sgks/class/list
@@ -1044,7 +981,7 @@ export class Api<
         classGrade?: number;
         /** 专业 */
         majorId?: number;
-        /** 队别 */
+        /** 队伍号 */
         classTeam?: number;
         /** 区队号 */
         classUnit?: number;
@@ -1052,7 +989,7 @@ export class Api<
         pageNo: number;
         classStatus: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1086,7 +1023,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassAddOrEditCreate
      * @summary 新增or编辑 班级
      * @request POST:/sgks/class/addOrEdit
@@ -1104,7 +1040,7 @@ export class Api<
         majorId: number;
         opt: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         any,
@@ -1122,7 +1058,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassGetList
      * @summary 查看班级详情
      * @request GET:/sgks/class/get
@@ -1131,7 +1066,7 @@ export class Api<
       query?: {
         classId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1165,7 +1100,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassDeleteDelete
      * @summary 删除班级
      * @request DELETE:/sgks/class/delete
@@ -1174,7 +1108,7 @@ export class Api<
       query?: {
         classId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1194,7 +1128,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentListCreate
      * @summary 查看学员列表
      * @request POST:/sgks/student/list
@@ -1211,7 +1144,7 @@ export class Api<
         pageSize: number;
         studentStatus: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1241,7 +1174,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentAddOrEditCreate
      * @summary 新建or编辑学员
      * @request POST:/sgks/student/addOrEdit
@@ -1254,7 +1186,7 @@ export class Api<
         classId: number;
         opt: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1275,7 +1207,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentGetList
      * @summary 查看学员详情
      * @request GET:/sgks/student/get
@@ -1284,7 +1215,7 @@ export class Api<
       query?: {
         studentId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1314,7 +1245,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentGetExamResultsList
      * @summary 查看学员的考试记录
      * @request GET:/sgks/student/getExamResults
@@ -1323,7 +1253,7 @@ export class Api<
       query?: {
         studentId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1366,7 +1296,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name StudentDeleteDelete
      * @summary 删除学员
      * @request DELETE:/sgks/student/delete
@@ -1375,7 +1304,7 @@ export class Api<
       query?: {
         studentId?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1395,7 +1324,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name GradeListList
      * @summary 查看年级列表
      * @request GET:/sgks/grade/list
@@ -1411,7 +1339,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name MajorListList
      * @summary 查看专业列表
      * @request GET:/sgks/major/list
@@ -1427,7 +1354,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassTeamListList
      * @summary 根据年级获取队伍列表
      * @request GET:/sgks/class/teamList
@@ -1436,7 +1362,7 @@ export class Api<
       query?: {
         grade?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1460,9 +1386,8 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassUnitListList
-     * @summary 根据年级和队别获取区队列表
+     * @summary 根据年级和队伍号获取区队列表
      * @request GET:/sgks/class/unitList
      */
     classUnitListList: (
@@ -1470,7 +1395,7 @@ export class Api<
         grade?: number;
         classTeam?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1494,7 +1419,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/学员管理
      * @name ClassGetByIdsCreate
      * @summary 批量查看班级详情
      * @request POST:/sgks/class/getByIds
@@ -1503,7 +1427,7 @@ export class Api<
       body: {
         classIds: number[];
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1528,7 +1452,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperListCreate
      * @summary 查看试卷列表
      * @request POST:/sgks/paper/list
@@ -1540,7 +1463,7 @@ export class Api<
         pageNo: number;
         pageSize: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1577,21 +1500,36 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
-     * @name PaperAddOrEditCreate
-     * @summary 新增or编辑试卷
-     * @request POST:/sgks/paper/addOrEdit
+     * @name PaperCreateCreate
+     * @summary 创建试卷
+     * @request POST:/sgks/paper/create
      */
-    paperAddOrEditCreate: (
+    paperCreateCreate: (
       body: {
-        paperId: string;
-        paperName: string;
-        /** 客观题id集合 */
-        questionIds: number[];
-        /** 操作题id集合 */
-        exerciseIds: number[];
+        name: string;
+        courceId: number;
+        /** 客观题 */
+        questions: {
+          /** 客观题 id */
+          id: number;
+          /** 排序 */
+          sort: number;
+          /** 分数 */
+          score: number;
+        }[];
+        /** 操作题 */
+        exercises: {
+          /** 操作题id */
+          id: number;
+          /** 操作步骤id */
+          exerciseStepId: number;
+          /** 排序 */
+          sort: number;
+          /** 分数 */
+          score: number;
+        }[];
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1601,7 +1539,7 @@ export class Api<
         },
         any
       >({
-        path: `/sgks/paper/addOrEdit`,
+        path: `/sgks/paper/create`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -1612,30 +1550,31 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperGetList
      * @summary 查看试卷详情
      * @request GET:/sgks/paper/get
      */
     paperGetList: (
       query?: {
-        paperId?: number;
+        id?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
           code: string;
           msg: string;
           data: {
-            paperId: number;
-            paperName: string;
-            /** 课程id */
-            courseId: number;
-            /** 课程名称 */
-            courseName: string;
+            id: number;
+            name: string;
+            course: {
+              /** 课程名称 */
+              courseName: string;
+              /** 课程id */
+              courseId: number;
+            };
             /** 总分 */
-            totalScore: number;
+            score: number;
             questions: {
               questionId: string;
               questionCode: string;
@@ -1666,7 +1605,10 @@ export class Api<
                 stepDesc: string;
                 stepOrder: string;
               }[];
-              labels: object[];
+              labels: {
+                labelId: number;
+                labelName: string;
+              }[];
             }[];
           };
         },
@@ -1682,22 +1624,22 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/试卷管理
      * @name PaperDeleteDelete
      * @summary 删除试卷
      * @request DELETE:/sgks/paper/delete
      */
     paperDeleteDelete: (
       query?: {
-        paperId?: number;
+        /** 试卷id */
+        id?: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
           code: string;
           msg: string;
-          data?: any;
+          data: object;
         },
         any
       >({
@@ -1711,7 +1653,350 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
+     * @name PaperUpdateCreate
+     * @summary 更新试卷
+     * @request POST:/sgks/paper/update
+     */
+    paperUpdateCreate: (
+      body: {
+        /** 试卷 id */
+        id: number;
+        name: string;
+        courceId: number;
+        /** 客观题 */
+        questions: {
+          /** 客观题 id */
+          id: number;
+          /** 排序 */
+          sort: number;
+          /** 分数 */
+          score: number;
+        }[];
+        /** 操作题 */
+        exercises: {
+          /** 操作题id */
+          id: number;
+          /** 操作步骤id */
+          exerciseStepId: number;
+          /** 排序 */
+          sort: number;
+          /** 分数 */
+          score: number;
+        }[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: number;
+        },
+        any
+      >({
+        path: `/sgks/paper/update`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamListList
+     * @summary 考试记录列表
+     * @request GET:/sgks/exam/list
+     */
+    examListList: (
+      query?: {
+        /** @example "年级" */
+        grade?: number;
+        /** @example "队号" */
+        team?: number;
+        /** @example "区队" */
+        unit?: number;
+        /** @example "考试开始时间-开始" */
+        startTimeStart?: string;
+        /** @example "考试开始时间-结束" */
+        startTimeEnd?: string;
+        /** @example "页号" */
+        pageNo?: number;
+        /** @example "页大小" */
+        pageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          code: string;
+          msg: string;
+          data: {
+            /** 考试 id */
+            id: number;
+            /** 考试名称 */
+            name: string;
+            /** 试卷id */
+            paperId: number;
+            /** 试卷名称 */
+            paperName: string;
+            /** 班级 id */
+            classId: number;
+            /** 年级 */
+            grade: number;
+            /** 队号 */
+            team: string;
+            /** 区队号 */
+            unit: string;
+            /** 考试时长(单位分钟) */
+            duration: string;
+            /** 实际开始时间 */
+            realStartTime: string;
+            /** 剩余分钟 */
+            remainMinutes: number;
+            /** 剩余秒数 */
+            remainSeconds: number;
+            /** 待开始、进行中、结束 */
+            statusStr: string;
+          }[];
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/list`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamCreateList
+     * @summary 创建考试
+     * @request GET:/sgks/exam/create
+     */
+    examCreateList: (
+      body: {
+        /** 名称 */
+        name: string;
+        /** 班级 */
+        classId: number;
+        /** 试卷id */
+        paperId: number;
+        /** 课程id */
+        courseId: number;
+        /** 计划开始时间 */
+        planStartTime: string;
+        /** 考试时长 */
+        duration: number;
+        /** 老师Id */
+        teacherId: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          "": string;
+          /** 错误码 */
+          code: number;
+          /** 错误信息 */
+          msg: number;
+          /** 考试 id */
+          data: number;
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/create`,
+        method: "GET",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamDeleteList
+     * @summary 删除考试
+     * @request GET:/sgks/exam/delete
+     */
+    examDeleteList: (
+      query?: {
+        /** 考试 id */
+        id?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          "": string;
+          /** 错误码 */
+          code: number;
+          /** 错误信息 */
+          msg: number;
+          data: boolean;
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/delete`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamStopCreate
+     * @summary 结束考试
+     * @request POST:/sgks/exam/stop
+     */
+    examStopCreate: (
+      query?: {
+        /** 考试 id */
+        id?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          "": string;
+          /** 错误码 */
+          code: number;
+          /** 错误信息 */
+          msg: number;
+          data: boolean;
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/stop`,
+        method: "POST",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamStartList
+     * @summary 开始考试
+     * @request GET:/sgks/exam/start
+     */
+    examStartList: (
+      query?: {
+        /** 考试 id */
+        id?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          "": string;
+          /** 错误码 */
+          code: number;
+          /** 错误信息 */
+          msg: number;
+          data: boolean;
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/start`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name ExamDetailList
+     * @summary 考试详情
+     * @request GET:/sgks/exam/detail
+     */
+    examDetailList: (
+      query?: {
+        /** 考试 id */
+        id?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          "": string;
+          /** 错误码 */
+          code: number;
+          /** 错误信息 */
+          msg: number;
+          /** 考试 id */
+          data: {
+            /** 考试 id */
+            id: number;
+            /** 考试名称 */
+            name: string;
+            /** 年级 */
+            grade: string;
+            /** 队号 */
+            team: string;
+            /** 区队号 */
+            unit: string;
+            /** 计划开始时间 */
+            planStartTime: string;
+            /** 实际开始时间 */
+            realStartTime: string;
+            /** 考试时长 */
+            duraion: number;
+            /** 老师 id */
+            teacherId: number;
+            /** 老师名称 */
+            teacherName: string;
+            /** 真实结束时间 */
+            realEndTime: string;
+            /** 待开始、进行中、已结束 */
+            statusStr: string;
+          };
+        },
+        {
+          code: string;
+          msg: string;
+          data: string;
+        }
+      >({
+        path: `/sgks/exam/detail`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name RecommendQuestionListCreate
      * @summary 学员客观题推荐列表
      * @request POST:/sgks/recommend/question/list
@@ -1725,7 +2010,7 @@ export class Api<
         pageSize: number;
         pageNo: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1757,7 +2042,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendQuesionDeleteDelete
      * @summary 删除客观题推荐题
      * @request DELETE:/sgks/recommend/quesion/delete
@@ -1767,7 +2051,7 @@ export class Api<
         studentId: number;
         questionId: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1788,7 +2072,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendExerciseListCreate
      * @summary 学员操作题推荐列表
      * @request POST:/sgks/recommend/exercise/list
@@ -1802,7 +2085,7 @@ export class Api<
         pageNo: number;
         pageSize: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1833,7 +2116,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 教师端/智能推荐
      * @name RecommendExerciseDeleteDelete
      * @summary 删除操作题推荐题
      * @request DELETE:/sgks/recommend/exercise/delete
@@ -1843,7 +2125,7 @@ export class Api<
         studentId: number;
         exerciseId: number;
       },
-      params: RequestParams = {}
+      params: RequestParams = {},
     ) =>
       this.request<
         {
@@ -1864,7 +2146,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 学员端
      * @name StudentMyInfoList
      * @summary 查看学员自己的基本信息
      * @request GET:/sgks/student/myInfo
@@ -1895,7 +2176,6 @@ export class Api<
     /**
      * No description
      *
-     * @tags 学员端
      * @name FrontExamInfoList
      * @summary 查看考试信息
      * @request GET:/sgks/front/examInfo

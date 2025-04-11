@@ -1,5 +1,6 @@
 import request from "@/services/interceptors";
 import { enumValuesAtom } from "@/store/enum";
+import { AddEditProps } from "@/types";
 import { enumToSelectOptions, QuestionTypeEnum } from "@/utils/enums";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -17,21 +18,28 @@ import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 type DataSourceType = {
-  opionSgin?: string;
-  opionContent?: string;
+  optionSgin?: string;
+  optionSign?: string;
 };
 const defaultData: DataSourceType[] = [
   {
-    opionSgin: "A",
-    opionContent: "",
+    optionSgin: "A",
+    optionSign: "",
   },
 ];
 
 const columns: ProColumns<DataSourceType>[] = [
   {
     title: "选项",
-    dataIndex: "opionContent",
-    width: "50%",
+    dataIndex: "optionSign",
+    editable: false,
+  },
+  {
+    title: "选项值",
+    dataIndex: "optionContent",
+    render: (_, record, index) => {
+      return index;
+    },
   },
   {
     title: "操作",
@@ -72,20 +80,36 @@ interface FormProps {
   }[];
 }
 
-const AddObjectiveTopic = () => {
+const AddObjectiveTopic = ({ editData, onSuccess, trigger }: AddEditProps) => {
   const { courseList, labelList } = useAtomValue(enumValuesAtom);
   const [form] = Form.useForm<FormProps>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() =>
     defaultData.map((i, idx) => idx)
   );
+  const onOpenChange = async (open: boolean) => {
+    if (open && editData) {
+      const res = await request.sgks.questionGetList({
+        questionId: editData?.questionId,
+      });
+      if (res.data.options?.length) {
+        setEditableRowKeys(res.data.options.map((item) => item.optionId));
+      }
+      form.setFieldsValue({
+        ...res.data,
+        labelIds: res.data?.labels?.map((item) => item.labelId) ?? [],
+      });
+    }
+  };
   return (
     <ModalForm<FormProps>
-      title="新建客观题"
+      onOpenChange={onOpenChange}
+      title={editData ? "编辑客观题" : "新建客观题"}
       trigger={
-        <Button type="primary">
-          <PlusOutlined />
-          新建
-        </Button>
+        trigger || (
+          <Button type="primary" icon={<PlusOutlined />}>
+            新增
+          </Button>
+        )
       }
       labelCol={{ span: 4 }}
       layout="horizontal"
@@ -98,17 +122,28 @@ const AddObjectiveTopic = () => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        await request.sgks.questionAddOrEditCreate(values);
+        await request.sgks.questionAddOrEditCreate({
+          ...values,
+          questionId: editData?.questionId,
+          opt: editData ? 2 : 1,
+        });
         console.log(values.name);
         message.success("提交成功");
+        onSuccess?.();
         return true;
       }}
     >
-      <ProFormText required name="questionCode" label="题目标号" />
+      <ProFormText
+        rules={[{ required: true }]}
+        required
+        name="questionCode"
+        label="题目标号"
+      />
       <ProFormSelect
         required
         name="questionType"
         label="客观题类型"
+        rules={[{ required: true }]}
         options={enumToSelectOptions(QuestionTypeEnum)}
       />
       <ProFormTextArea required name="questionStem" label="题干" />
@@ -116,13 +151,15 @@ const AddObjectiveTopic = () => {
         required
         name="courseId"
         label="所属课程"
+        rules={[{ required: true }]}
         options={courseList}
       />
       <ProFormSelect
         required
-        name="labels"
+        name="labelIds"
         mode="multiple"
         label="标签"
+        rules={[{ required: true }]}
         options={labelList}
       />
       <ProFormDependency name={["questionType"]}>
@@ -130,7 +167,7 @@ const AddObjectiveTopic = () => {
           if (questionType === QuestionTypeEnum.判断题) {
             return (
               <ProFormSelect
-                required
+                rules={[{ required: true }]}
                 name="answerTf"
                 label="(判断题)答案"
                 options={[
@@ -152,7 +189,7 @@ const AddObjectiveTopic = () => {
             return (
               <ProFormTextArea
                 placeholder={"多个答案使用逗号隔开"}
-                required
+                rules={[{ required: true }]}
                 name="answerContent"
                 label="答案"
               />
@@ -160,31 +197,53 @@ const AddObjectiveTopic = () => {
           } else if (questionType === QuestionTypeEnum.选择题) {
             return (
               <>
-                <ProForm.Item required label="选项" name="options">
-                  <EditableProTable<DataSourceType>
-                    rowKey="id"
-                    toolBarRender={false}
-                    columns={columns}
-                    recordCreatorProps={{
-                      newRecordType: "dataSource",
-                      position: "top",
-                      record: (index) => ({
-                        id: index,
-                        opionContent: "",
-                      }),
-                    }}
-                    editable={{
-                      type: "multiple",
-                      editableKeys,
-                      onChange: setEditableRowKeys,
-                      actionRender: (row, _, dom) => {
-                        return [dom.delete];
+                <EditableProTable<DataSourceType>
+                  name="options"
+                  rowKey="optionId"
+                  toolBarRender={false}
+                  controlled
+                  columns={columns}
+                  formItemProps={{
+                    label: "选项编辑",
+                    required: true,
+                    rules: [
+                      {
+                        validator: async (_, value) => {
+                          if (value.length < 1) {
+                            throw new Error("请至少添加一个选项");
+                          }
+
+                          if (value.length > 4) {
+                            throw new Error("最多可以设置四个选项");
+                          }
+                        },
                       },
-                    }}
-                  />
-                </ProForm.Item>
+                    ],
+                  }}
+                  recordCreatorProps={{
+                    newRecordType: "dataSource",
+                    position: "bottom",
+                    record: (index) => {
+                      const letters = ["A", "B", "C", "D"];
+                      const letter = letters[index] || "";
+                      return {
+                        optionId: index,
+                        optionSign: letter,
+                        optionContent: "",
+                      };
+                    },
+                  }}
+                  editable={{
+                    type: "multiple",
+                    editableKeys,
+                    onChange: setEditableRowKeys,
+                    actionRender: (row, _, dom) => {
+                      return [dom.delete];
+                    },
+                  }}
+                />
                 <ProFormSelect
-                  required
+                  rules={[{ required: true }]}
                   name="answerChoice"
                   label="(选择题)答案"
                   options={[
@@ -195,6 +254,14 @@ const AddObjectiveTopic = () => {
                     {
                       label: "B",
                       value: "B",
+                    },
+                    {
+                      label: "C",
+                      value: "C",
+                    },
+                    {
+                      label: "D",
+                      value: "D",
                     },
                   ]}
                 />

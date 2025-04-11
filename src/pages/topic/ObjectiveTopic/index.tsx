@@ -23,6 +23,8 @@ const columns: ProColumns<ObjectiveType>[] = [
   {
     title: "题干",
     dataIndex: "questionStem",
+    tooltip: true,
+    ellipsis: true,
   },
 
   {
@@ -44,22 +46,20 @@ const columns: ProColumns<ObjectiveType>[] = [
   {
     title: "创建时间",
     dataIndex: "createTime",
+    valueType: "dateTime",
     hideInSearch: true,
   },
   {
     title: "更新时间",
     dataIndex: "updateTime",
+    valueType: "dateTime",
     hideInSearch: true,
   },
   {
     title: "标签",
     dataIndex: "labels",
     valueType: "select",
-    hideInTable: true,
-    valueEnum: {
-      1: "标签1",
-      2: "标签",
-    },
+    hideInSearch: true,
     render: (_, record) => {
       return record.labels.map((item) => item.labelName).join(",");
     },
@@ -69,14 +69,11 @@ const columns: ProColumns<ObjectiveType>[] = [
     valueType: "option",
     key: "option",
     render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.questionId);
-        }}
-      >
-        编辑
-      </a>,
+      <AddObjectiveTopic
+        editData={record}
+        trigger={<a>编辑</a>}
+        onSuccess={() => action?.reload()}
+      />,
       <a
         onClick={() => {
           Modal.confirm({
@@ -86,7 +83,7 @@ const columns: ProColumns<ObjectiveType>[] = [
             okText: "确认",
             cancelText: "取消",
             onOk: async () => {
-              await request.sgks.quesionDeleteDelete({
+              await request.sgks.questionDeleteDelete({
                 questionId: +record.questionId,
               });
               message.success("删除成功");
@@ -139,7 +136,9 @@ const ObjectiveTopic = () => {
       }}
       pagination={false}
       dateFormatter="string"
-      toolBarRender={() => [<AddObjectiveTopic />]}
+      toolBarRender={() => [
+        <AddObjectiveTopic onSuccess={() => actionRef.current?.reload()} />,
+      ]}
     />
   );
 };
