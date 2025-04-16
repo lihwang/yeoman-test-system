@@ -117,7 +117,7 @@ interface PaperType {
    * 操作题数量
    */
   exerciseCount: string;
-  paperId: string;
+  id: string;
   /**
    * 试卷名称
    */
@@ -129,7 +129,7 @@ interface PaperType {
   /**
    * 总分
    */
-  totalScore: string;
+  score: string;
   updateTime: string;
 }
 

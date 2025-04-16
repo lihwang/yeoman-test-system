@@ -761,10 +761,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** 课程id */
         courseId?: number;
         labelIds?: number[];
-        /** 题干 */
-        exerciseStem?: string;
+        exerciseCode?: string;
         pageNo: number;
         pageSize: number;
+        exerciseStatus: number;
       },
       params: RequestParams = {},
     ) =>
@@ -776,7 +776,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             exerciseId: number;
             exerciseType: string;
             exerciseCode: string;
-            exerciseStem: string;
+            exerciseInfo: string;
             labels?: {
               labelId: string;
               labelName: string;
@@ -785,6 +785,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             updateTime: string;
             courseName: string;
             courseId: number;
+            exerciseSource: number;
+            exerciseStatus: number;
           }[];
         },
         any
@@ -813,23 +815,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         exerciseCode: string;
         /** 所属课程id */
         courseId: number;
-        /** 题干 */
-        exerciseStem: string;
+        /** 题目标题(富文本） */
+        exerciseInfo: string;
         /** 解题提示 */
         exercisePrompt: string;
-        /**
-         * 答案文件
-         * 字处理、电子表格、演示文稿的答案文件，oss路径
-         */
-        attachment: string;
-        /**
-         * 答案脚本
-         * 用户在学员电脑上生产正确文件夹和文件的Windows shell脚本，基本操作题的正确答案
-         */
-        answerShell: string;
         /** 知识点标签 */
         labelIds: number[];
-        exerciseSteps: ExerciseStepsType[];
+        exerciseSteps: {
+          exerciseStepId: number;
+          stepDesc: string;
+          stepOrder: string;
+          /** 富文本补充说明 */
+          stepRichText: string;
+          knowledges: {
+            knowledgeId: string;
+            parameterValues: {
+              parameterIndex: number;
+              parameterValue: string;
+            }[];
+          }[];
+        }[];
+        /**
+         * 字处理、电子表格、演示文稿的原始素材
+         * 存的是url
+         */
+        exerciseRawFile: string;
+        /**
+         * 答案文件
+         * 存的是url
+         */
+        exerciseAnswer: string;
       },
       params: RequestParams = {},
     ) =>
@@ -1452,16 +1467,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name PaperListCreate
+     * @name PaperListList
      * @summary 查看试卷列表
-     * @request POST:/sgks/paper/list
+     * @request GET:/sgks/paper/list
      */
-    paperListCreate: (
-      body: {
+    paperListList: (
+      query?: {
+        /** 试卷名 */
         paperName?: string;
+        /** 课程 id */
         courseId?: number;
-        pageNo: number;
-        pageSize: number;
+        /** 页号 */
+        pageNo?: number;
+        /** 页大小 */
+        pageSize?: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1490,9 +1509,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         any
       >({
         path: `/sgks/paper/list`,
-        method: "POST",
-        body: body,
-        type: ContentType.Json,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
@@ -1550,11 +1568,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name PaperGetList
+     * @name PaperDetailList
      * @summary 查看试卷详情
-     * @request GET:/sgks/paper/get
+     * @request GET:/sgks/paper/detail
      */
-    paperGetList: (
+    paperDetailList: (
       query?: {
         id?: number;
       },
@@ -1614,7 +1632,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         },
         any
       >({
-        path: `/sgks/paper/get`,
+        path: `/sgks/paper/detail`,
         method: "GET",
         query: query,
         format: "json",
@@ -1624,11 +1642,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name PaperDeleteDelete
+     * @name PaperRemoveCreate
      * @summary 删除试卷
-     * @request DELETE:/sgks/paper/delete
+     * @request POST:/sgks/paper/remove
      */
-    paperDeleteDelete: (
+    paperRemoveCreate: (
       query?: {
         /** 试卷id */
         id?: number;
@@ -1643,8 +1661,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         },
         any
       >({
-        path: `/sgks/paper/delete`,
-        method: "DELETE",
+        path: `/sgks/paper/remove`,
+        method: "POST",
         query: query,
         format: "json",
         ...params,
@@ -1777,11 +1795,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name ExamCreateList
+     * @name ExamCreateCreate
      * @summary 创建考试
-     * @request GET:/sgks/exam/create
+     * @request POST:/sgks/exam/create
      */
-    examCreateList: (
+    examCreateCreate: (
       body: {
         /** 名称 */
         name: string;
@@ -1817,7 +1835,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         }
       >({
         path: `/sgks/exam/create`,
-        method: "GET",
+        method: "POST",
         body: body,
         type: ContentType.Json,
         format: "json",
@@ -1827,11 +1845,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name ExamDeleteList
+     * @name ExamDeleteCreate
      * @summary 删除考试
-     * @request GET:/sgks/exam/delete
+     * @request POST:/sgks/exam/delete
      */
-    examDeleteList: (
+    examDeleteCreate: (
       query?: {
         /** 考试 id */
         id?: number;
@@ -1854,7 +1872,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         }
       >({
         path: `/sgks/exam/delete`,
-        method: "GET",
+        method: "POST",
         query: query,
         format: "json",
         ...params,
@@ -1899,11 +1917,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name ExamStartList
+     * @name ExamStartCreate
      * @summary 开始考试
-     * @request GET:/sgks/exam/start
+     * @request POST:/sgks/exam/start
      */
-    examStartList: (
+    examStartCreate: (
       query?: {
         /** 考试 id */
         id?: number;
@@ -1926,7 +1944,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         }
       >({
         path: `/sgks/exam/start`,
-        method: "GET",
+        method: "POST",
         query: query,
         format: "json",
         ...params,
