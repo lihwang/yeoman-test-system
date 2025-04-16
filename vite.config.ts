@@ -21,6 +21,9 @@ export default defineConfig({
         target: "http://121.40.216.86/", //目标请求的地址
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: {
+          "*": ''
+        }
       },
     },
   },
