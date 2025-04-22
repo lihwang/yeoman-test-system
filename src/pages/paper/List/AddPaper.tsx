@@ -7,13 +7,15 @@ import {
 } from "@/utils/enums";
 import { ObjectiveItem, OperationItem } from "@/utils/types";
 import {
+  DragSortTable,
   ProCard,
   ProColumns,
   ProList,
   ProTable,
 } from "@ant-design/pro-components";
 import { Button, message, Modal, Tabs } from "antd";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type TopicItem = ObjectiveItem | OperationItem;
 
@@ -21,6 +23,29 @@ const AddPaper = () => {
   const [topic, setTopic] = useState<TopicType>(TopicType.Objective);
   const actionRef = useRef<any>(null);
   const [topicList, setTopicList] = useState<TopicItem[]>([]);
+  const { id: paperId } = useParams<{ id: string }>();
+
+  // 可以添加一个 useEffect 来在组件加载时获取试卷数据
+  useEffect(() => {
+    if (!isNaN(+paperId)) {
+      // 获取试卷详情
+      fetchPaperDetail(+paperId);
+    }
+  }, [paperId]);
+
+  // 获取试卷详情的函数
+  const fetchPaperDetail = async (id: number) => {
+    try {
+      // 根据实际 API 调整
+      const res = await request.sgks.paperDetailList({ id });
+      if (res.data) {
+        // 设置试卷题目列表
+        // setTopicList(res.data);
+      }
+    } catch (error) {
+      console.error("获取试卷详情失败", error);
+    }
+  };
 
   const columns: ProColumns<TopicItem>[] = useMemo(() => {
     return topic === TopicType.Objective
@@ -29,11 +54,13 @@ const AddPaper = () => {
             title: "问题ID",
             dataIndex: "questionId",
             hideInSearch: true,
+            width: "80px",
           },
           {
             title: "问题类型",
             dataIndex: "questionType",
             valueEnum: enumToObject(QuestionTypeEnum),
+            width: "80px",
           },
           {
             title: "题干",
@@ -42,6 +69,7 @@ const AddPaper = () => {
           {
             title: "知识点",
             dataIndex: "labels",
+            width: "100px",
           },
         ]
       : [
@@ -94,16 +122,19 @@ const AddPaper = () => {
               const res =
                 topic === TopicType.Objective
                   ? await request.sgks.questionListCreate({
+                      ...params,
                       pageNo: params.current,
                       pageSize: params.pageSize,
                     })
                   : await request.sgks.exerciseListCreate({
+                      ...params,
                       pageNo: params.current,
                       pageSize: params.pageSize,
                     });
 
               return {
-                data: res.data,
+                data: res.data.records,
+                total: res.data?.totalCount,
               };
             }}
             search={{
@@ -136,7 +167,7 @@ const AddPaper = () => {
               保存
             </Button>
           </div>
-          <ProList<TopicItem> dataSource={topicList} />
+          <DragSortTable<TopicItem> dataSource={topicList} />
         </>
       </ProCard>
     </ProCard>

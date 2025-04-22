@@ -121,7 +121,7 @@ interface PaperType {
   /**
    * 试卷名称
    */
-  paperName: string;
+  name: string;
   /**
    * 客观题数量
    */

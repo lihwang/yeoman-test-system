@@ -12,7 +12,7 @@
 export interface ExerciseStepsType {
   exerciseStepId: number;
   stepDesc: string;
-  stepOrder: string;
+  stepOrder: number;
 }
 
 export interface ExerciseType {
@@ -824,11 +824,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         exerciseSteps: {
           exerciseStepId: number;
           stepDesc: string;
-          stepOrder: string;
+          stepOrder: number;
           /** 富文本补充说明 */
           stepRichText: string;
           knowledges: {
             knowledgeId: string;
+            knowledgeOrder: number;
             parameterValues: {
               parameterIndex: number;
               parameterValue: string;
@@ -845,6 +846,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * 存的是url
          */
         exerciseAnswer: string;
+        opt: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1474,7 +1476,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     paperListList: (
       query?: {
         /** 试卷名 */
-        paperName?: string;
+        name?: string;
         /** 课程 id */
         courseId?: number;
         /** 页号 */
@@ -1489,21 +1491,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           code: string;
           msg: string;
           data: {
-            paperId: string;
+            /** 试卷id */
+            id: string;
             /** 试卷名称 */
-            paperName: string;
-            /** 所属课程id */
-            courseId: string;
-            /** 所属课程名称 */
-            courseName: string;
+            name: string;
             /** 客观题数量 */
             questionCount: string;
             /** 操作题数量 */
             exerciseCount: string;
             /** 总分 */
-            totalScore: string;
+            score: number;
+            /** 创建时间 */
             createTime: string;
+            /** 更新时间 */
             updateTime: string;
+            /** 课程 */
+            course: {
+              /** 课程id */
+              courseId: number;
+              /** 课程名称 */
+              courseName: string;
+            };
           }[];
         },
         any

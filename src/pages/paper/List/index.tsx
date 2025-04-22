@@ -18,28 +18,28 @@ const PaperList = () => {
   const columns: ProColumns<PaperType>[] = [
     {
       title: "试卷ID",
-      dataIndex: "paperId",
+      dataIndex: "id",
       hideInSearch: true,
       hideInTable: true,
     },
     {
       title: "试卷名称",
-      dataIndex: "paperName",
+      dataIndex: "name",
     },
-    {
-      title: "课程查询",
-      dataIndex: "courseId",
-      hideInTable: true,
-      valueType: "select",
-      fieldProps: {
-        options: courseList,
-      },
-    },
-    {
-      title: "所属课程",
-      dataIndex: "courseName",
-      hideInSearch: true,
-    },
+    // {
+    //   title: "课程查询",
+    //   dataIndex: "courseId",
+    //   hideInTable: true,
+    //   valueType: "select",
+    //   fieldProps: {
+    //     options: courseList,
+    //   },
+    // },
+    // {
+    //   title: "所属课程",
+    //   dataIndex: "courseName",
+    //   hideInSearch: true,
+    // },
     {
       title: "客观题数量",
       dataIndex: "questionCount",
@@ -52,7 +52,7 @@ const PaperList = () => {
     },
     {
       title: "总分",
-      dataIndex: "totalScore",
+      dataIndex: "score",
       hideInSearch: true,
     },
     {
@@ -73,7 +73,8 @@ const PaperList = () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.paperId);
+            // action?.startEditable?.(record.id);
+            navigate(`/paper/${record.id}`);
           }}
         >
           编辑

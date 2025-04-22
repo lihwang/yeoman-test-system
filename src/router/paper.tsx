@@ -15,7 +15,7 @@ const paper: Route[] = [
         element: <PaperList />,
       },
       {
-        path: "info",
+        path: ":id",
         name: "试卷详情",
         element: <AddPaper />,
         hidden: true,
